@@ -1,5 +1,3 @@
-Claro, aquí tienes el README traducido al español:
-
 ---
 
 # Aplicación Web para Gestión de Dentistas
