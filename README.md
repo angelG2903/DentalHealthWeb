@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+Claro, aquí tienes el README traducido al español:
 
-## Getting Started
+---
 
-First, run the development server:
+# Aplicación Web para Gestión de Dentistas
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Este proyecto es una aplicación web construida con **Next.js** y **Tailwind CSS** que ayuda a los dentistas a gestionar sus citas, crear y almacenar expedientes de pacientes, gestionar ofertas promocionales, y habilitar la mensajería en tiempo real entre los dentistas y sus pacientes.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Comenzando
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+### Prerrequisitos
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Para ejecutar este proyecto, necesitas tener **Node.js** instalado.
 
-## Learn More
+### Instalación
 
-To learn more about Next.js, take a look at the following resources:
+1. Clona el repositorio en tu máquina local.
+2. Instala las dependencias ejecutando:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   ```bash
+   npm install
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+3. Una vez que las dependencias estén instaladas, puedes iniciar el servidor de desarrollo:
 
-## Deploy on Vercel
+   ```bash
+   npm run dev
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+4. Abre tu navegador y ve a [http://localhost:3000](http://localhost:3000) para ver la aplicación.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+### Funcionalidades
+
+- **Gestión de Citas**: Los dentistas pueden gestionar y hacer seguimiento de las citas con sus pacientes.
+- **Expedientes de Pacientes**: Los dentistas pueden crear y almacenar expedientes de pacientes, incluyendo historial médico y tratamientos.
+- **Gestión de Promociones**: Los dentistas pueden crear y gestionar ofertas promocionales visibles para sus pacientes.
+- **Mensajería**: La funcionalidad de mensajería en tiempo real permite la comunicación entre dentistas y pacientes.
+
+### Tecnologías Utilizadas
+
+- **Next.js**: Framework de React para renderizado del lado del servidor y generación de sitios estáticos.
+- **Tailwind CSS**: Framework CSS basado en utilidades para diseñar interfaces responsivas.
+- **Node.js**: Utilizado para servicios backend e integración con APIs.
+
+---
