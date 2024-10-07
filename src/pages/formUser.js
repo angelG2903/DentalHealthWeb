@@ -5,11 +5,13 @@ import {
     handleClinicAddressChange, handleClinicLogoChange, handleClinicNameChange, handleCloseAlert,
     handleEmailChange, handleConfirmPasswordChange, handleDegreeChange, handlePasswordChange,
     handleProfessionalLicenseChange, handleRemoveAuthorization, handleRemoveClinicLogo,
-    handleSpecialtyChange, handleSpecialtyLicenseChange
+    handleSpecialtyChange, handleSpecialtyLicenseChange, handleCloseAlertGeneral
 } from '@/utils/formValidations';
 import { useState } from "react";
+import { useRouter } from 'next/router';
 
 const Formulario = () => {
+    const router = useRouter();
     const [formData, setFormData] = useState({
         name: '',
         lastName: '',
@@ -51,6 +53,7 @@ const Formulario = () => {
         clinicLogo: null,
         authorizationFile: null, 
         showError: false,
+        general: '',
     });
 
     const [currentStep, setCurrentStep] = useState(1);
@@ -85,7 +88,7 @@ const Formulario = () => {
                     showError: true,
                 }));
                 return false; 
-            }
+            } 
             
         }
     
@@ -122,10 +125,11 @@ const Formulario = () => {
     
       
     // Manejar el envío del formulario
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (formData.clinicName.trim() === ''
+        if (formData.clinicName.trim() === '' || formData.clinicAddress.trim() === ''
+            ||errors.clinicName.length > 0 || errors.clinicAddress.length > 0
         ) {
             setErrors((prevErrors) => ({
                 ...prevErrors,
@@ -134,14 +138,110 @@ const Formulario = () => {
                            
         } else {
 
-            console.log("Datos enviados:", formData);
+            // Crear una instancia de FormData
+            const formDataToSend = new FormData();
+
+            // Agregar los campos de texto
+            formDataToSend.append('name', formData.name);
+            formDataToSend.append('lastName', formData.lastName);
+            formDataToSend.append('gender', formData.gender);
+            formDataToSend.append('birthDate', formData.birthDate);
+            formDataToSend.append('phoneNumber', formData.phoneNumber);
+            formDataToSend.append('email', formData.email);
+            formDataToSend.append('password', formData.password);
+            formDataToSend.append('confirmPassword', formData.confirmPassword);
+            formDataToSend.append('role', formData.role);
+            formDataToSend.append('degree', formData.degree);
+            formDataToSend.append('professionalLicense', formData.professionalLicense);
+            formDataToSend.append('specialty', formData.specialty);
+            formDataToSend.append('specialtyLicense', formData.specialtyLicense);
+            formDataToSend.append('clinicName', formData.clinicName);
+            formDataToSend.append('clinicAddress', formData.clinicAddress);
+
+            // Agregar los archivos opcionales
+            if (formData.profilePicture) {
+                formDataToSend.append('profilePicture', formData.profilePicture);
+            }
+            if (formData.clinicLogo) {
+                formDataToSend.append('clinicLogo', formData.clinicLogo);
+            }
+            if (formData.authorizationFile) {
+                formDataToSend.append('authorizationFile', formData.authorizationFile);
+            }
+
+            try {
+                // Enviar el formulario al servidor
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+                const response = await fetch(`${apiUrl}/api/auth/registerDoctor`, {
+                    method: 'POST',
+                    body: formDataToSend,  // Enviar el objeto FormData
+                });
+
+                if (response.ok) {
+                    console.log('Formulario enviado con éxito');
+
+                    // Limpiar el formulario reseteando el estado
+                    setFormData({
+                        name: '',
+                        lastName: '',
+                        gender: '',
+                        birthDate: '',
+                        phoneNumber: '',
+                        email: '',
+                        password: '',
+                        confirmPassword: '',
+                        role: '',
+                        degree: '',
+                        professionalLicense: '',
+                        specialty: '',
+                        specialtyLicense: '',
+                        clinicName: '',
+                        clinicAddress: '',
+                        profilePicture: null,
+                        clinicLogo: null,
+                        authorizationFile: null,
+                    });
+                    
+                    setErrors({
+                        name: '',
+                        lastName: '',
+                        gender: '',
+                        birthDate: '',
+                        phoneNumber: '',
+                        email: '',
+                        password: '',
+                        confirmPassword: '',
+                        role: '',
+                        degree: '',
+                        professionalLicense: '',
+                        specialty: '',
+                        specialtyLicense: '',
+                        clinicName: '',
+                        clinicAddress: '',
+                        profilePicture: null,
+                        clinicLogo: null,
+                        authorizationFile: null,
+                        showError: false,
+                    });
+                    
+                    // Redirigir al login
+                    router.push('/');
+
+                } else {
+                    console.error('Error al enviar el formulario');
+                    setErrors((prevErrors) => ({
+                        ...prevErrors,
+                        general: 'Error al enviar el formulario. Inténtalo de nuevo.',
+                    }));
+                }
+            } catch (error) {
+                console.error('Error en la solicitud:', error);
+                setErrors((prevErrors) => ({
+                    ...prevErrors,
+                    general: `Ocurrió un error al enviar la solicitud. ${error}`,
+                }));
+            }
         }
-        // Preparar datos para enviar
-        
-
-        // Puedes hacer una petición fetch para enviar los datos al backend
-
-        
     };
 
 
@@ -172,6 +272,19 @@ const Formulario = () => {
                     <span className="block sm:inline"> Todos los campos deben ser llenados correctamente antes de continuar.</span>
                     <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
                     <svg className="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" onClick={() => handleCloseAlert(setErrors)}>
+                        <title>Cerrar</title>
+                        <path d="M14.348 5.652a.5.5 0 1 1 .707.707L10.707 10l4.348 4.348a.5.5 0 0 1-.707.707L10 10.707l-4.348 4.348a.5.5 0 1 1-.707-.707L9.293 10 4.945 5.652a.5.5 0 1 1 .707-.707L10 9.293l4.348-4.348z"/>
+                    </svg>
+                    </span>
+                </div>
+                )}
+
+                {errors.general && (
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 mb-5 rounded relative" role="alert">
+                    <strong className="font-bold">¡Error!</strong>
+                    <span className="block sm:inline"> { errors.general } </span>
+                    <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
+                    <svg className="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" onClick={() => handleCloseAlertGeneral(setErrors)}>
                         <title>Cerrar</title>
                         <path d="M14.348 5.652a.5.5 0 1 1 .707.707L10.707 10l4.348 4.348a.5.5 0 0 1-.707.707L10 10.707l-4.348 4.348a.5.5 0 1 1-.707-.707L9.293 10 4.945 5.652a.5.5 0 1 1 .707-.707L10 9.293l4.348-4.348z"/>
                     </svg>
@@ -330,6 +443,7 @@ const Formulario = () => {
                                     className={`mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 
                                     focus:outline-none focus:ring focus:border-blue-300
                                     ${errors.degree ? "border-red-500" : "border-gray-300"}`}
+                                    maxLength={51}
                                 />
                                 {errors.degree && <p className="text-red-500 text-xs mt-1">{errors.degree}</p>}
                             </div>
@@ -355,6 +469,7 @@ const Formulario = () => {
                                     className={`mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 
                                     focus:outline-none focus:ring focus:border-blue-300
                                     ${errors.specialty ? "border-red-500" : "border-gray-300"}`}
+                                    maxLength={51}
                                 />
                                 {errors.specialty && <p className="text-red-500 text-xs mt-1">{errors.specialty}</p>}
                             </div>
@@ -385,6 +500,7 @@ const Formulario = () => {
                                     className={`mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 
                                                 focus:outline-none focus:ring focus:border-blue-300
                                                 ${errors.clinicName ? "border-red-500" : "border-gray-300"}`}
+                                    maxLength={50}
                                 />
                                 {errors.clinicName && <p className="text-red-500 text-xs mt-1">{errors.clinicName}</p>}
                             </div>

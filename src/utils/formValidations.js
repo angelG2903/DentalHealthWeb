@@ -1,8 +1,7 @@
 const handleNameChange = (e, formData, setFormData, setErrors) => {
-    const value = e.target.value;
-    setFormData({ ...formData, name: value});
-   
-    
+    const value = e.target.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+    setFormData({ ...formData, name: value });
+
     if (value.trim() === '') {
         setErrors((prevErrors) => ({
             ...prevErrors,
@@ -26,8 +25,9 @@ const handleNameChange = (e, formData, setFormData, setErrors) => {
     }
 };
 
+
 const handleLastNameChange = (e, formData, setFormData, setErrors) => {
-    const value = e.target.value;
+    const value = e.target.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
     setFormData({ ...formData, lastName: value});
 
     if (value.trim() === '') {
@@ -135,13 +135,23 @@ const handlePhoneNumberChange = (e, formData, setFormData, setErrors) => {
 };
 
 const handleDegreeChange = (e, formData, setFormData, setErrors) => {
-    const value = e.target.value;
+    const value = e.target.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
     setFormData({ ...formData, degree: value });
 
     if (value.trim() === '') {
         setErrors((prevErrors) => ({
             ...prevErrors,
-            degree: 'La Licenciatura es requerido',
+            degree: 'La Licenciatura es requerida',
+        }));
+    } else if (value.trim().length < 7) {
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            degree: 'La Licenciatura debe tener al menos 7 caracteres',
+        }));
+    } else if (value.trim().length > 50) {
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            degree: 'La Licenciatura no puede tener más de 50 caracteres',
         }));
     } else {
         setErrors((prevErrors) => ({
@@ -150,6 +160,7 @@ const handleDegreeChange = (e, formData, setFormData, setErrors) => {
         }));
     }
 };
+
 
 const handleProfessionalLicenseChange = (e, formData, setFormData, setErrors) => {
     const value = e.target.value.replace(/\D/g, '');
@@ -170,13 +181,23 @@ const handleProfessionalLicenseChange = (e, formData, setFormData, setErrors) =>
 };
 
 const handleSpecialtyChange = (e, formData, setFormData, setErrors) => {
-    const value = e.target.value;
+    const value = e.target.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
     setFormData({ ...formData, specialty: value });
 
     if (value.trim() === '') {
         setErrors((prevErrors) => ({
             ...prevErrors,
             specialty: 'La Especialidad es requerido',
+        }));
+    } else if (value.trim().length < 7) {
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            specialty: 'La Especialidad debe tener al menos 7 caracteres',
+        }));
+    } else if (value.trim().length > 50) {
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            specialty: 'La Especialidad no puede tener más de 50 caracteres',
         }));
     } else {
         setErrors((prevErrors) => ({
@@ -238,7 +259,7 @@ const handleConfirmPasswordChange = (e, formData, setFormData, setErrors) => {
     }
 };
 
-const handleEmailChange = (e, formData, setFormData, setErrors) => {
+const handleEmailChange = async (e, formData, setFormData, setErrors) => {
     const value = e.target.value;
     setFormData({ ...formData, email: value });
 
@@ -249,10 +270,41 @@ const handleEmailChange = (e, formData, setFormData, setErrors) => {
             email: "Por favor, introduce un correo electrónico válido."
         }));
     } else {
-        setErrors((prevErrors) => ({
-            ...prevErrors,
-            email: ""
-        }));
+        // Realizar la validación en el backend
+        try {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+            const response = await fetch(`${apiUrl}/api/auth/checkEmailDoctor`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email: value }),
+            });
+
+
+            const data = await response.json();
+
+            if (data.exists) {
+                // Si el correo ya existe
+                setErrors((prevErrors) => ({
+                    ...prevErrors,
+                    email: "Este correo electrónico ya está registrado."
+                }));
+            } else {
+                // Si el correo es válido y no está registrado
+                setErrors((prevErrors) => ({
+                    ...prevErrors,
+                    email: ""
+                }));
+            }
+        } catch (error) {
+            // Manejar errores en la solicitud
+            console.error("Error en la validación del correo:", error);
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                email: "Hubo un error al validar el correo. Intenta de nuevo más tarde."
+            }));
+        }
     }
 };
 
@@ -354,6 +406,11 @@ const handleClinicNameChange = (e, formData, setFormData, setErrors) => {
             ...prevErrors,
             clinicName: 'El nombre del consultorio es requerido.',
         }));
+    } else if (value.trim().length < 2) {
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            clinicName: 'El nombre del consultorio debe tener al menos 2 caracteres',
+        }));
     } else {
         setErrors((prevErrors) => ({
             ...prevErrors,
@@ -387,11 +444,18 @@ const handleCloseAlert = (setErrors) => {
     }));
 };
 
+const handleCloseAlertGeneral = (setErrors) => {
+    setErrors((prevErrors) => ({
+        ...prevErrors,
+        general: false,
+    }));
+};
+
 export {
     handleNameChange, handleLastNameChange, handleAuthorizationFileChange, handleBirthDateChange, 
     handleClinicAddressChange, handleClinicLogoChange, handleClinicNameChange, handleCloseAlert,
     handleConfirmPasswordChange, handlePasswordChange, handlePhoneNumberChange, handleDegreeChange,
     handleEmailChange, handleGenderChange, handleProfessionalLicenseChange, handleRemoveFile, 
     handleRemoveAuthorization, handleRemoveClinicLogo, handleFileChange, handleSpecialtyLicenseChange,
-    handleSpecialtyChange
+    handleSpecialtyChange, handleCloseAlertGeneral
 }
