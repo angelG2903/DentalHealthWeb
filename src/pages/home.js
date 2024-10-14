@@ -1,0 +1,76 @@
+import Layout from "@/components/Layout";
+import { useState } from "react";
+import { useRouter } from "next/router";
+import { Carousel } from 'react-responsive-carousel';
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // Import the CSS for the carousel
+import Image from 'next/image';
+import logo1 from '@@/img/logo3.png';
+import logo2 from '@@/img/logo4.png';
+import logo3 from '@@/img/logo5.png';
+
+const Home = () => {
+  const [images, setImages] = useState([
+    { src: logo1, alt: "Promoción 1" },
+    { src: logo2, alt: "Promoción 2" },
+    { src: logo3, alt: "Promoción 3" },
+  ]); // Array con imágenes y descripciones
+
+  const router = useRouter();
+
+  return (
+    <Layout>
+      <div className="min-h-screen flex flex-col items-center justify-center py-4">
+        
+        {/* Título */}
+        <h1 className="text-2xl font-bold mb-4">Tus promociones publicadas</h1>
+        
+        {/* Carrusel */}
+        <div className="w-full max-w-96">
+          {images.length > 0 ? (
+            <Carousel
+              showThumbs={false}
+              infiniteLoop
+              autoPlay
+              interval={3000}
+              showArrows
+            >
+              {images.map((img, index) => (
+                <div key={index}>
+                  <Image 
+                    src={img.src} 
+                    alt={img.alt} 
+                    width={600} 
+                    objectFit="contain"
+                    priority={true}
+                  />
+                </div>
+              ))}
+            </Carousel>
+          ) : (
+            <div className="flex justify-center items-center">
+              <Image
+                src="/default-promotion.jpg"
+                alt="Imagen de promoción por defecto"
+                width={800}
+                objectFit="contain"
+                className="rounded-lg shadow-lg"
+              />
+            </div>
+          )}
+        </div>
+
+        
+      </div>
+
+      {/* Botón de mensaje estático */}
+      <button
+        className="fixed bottom-20 right-6 bg-blue-500 text-white py-2 px-4 rounded-full shadow-lg hover:bg-blue-600"
+        onClick={() => alert('Mensaje abierto')}
+      >
+        Mensajes
+      </button>
+    </Layout>
+  );
+};
+
+export default Home;
