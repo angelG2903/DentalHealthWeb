@@ -2,6 +2,7 @@ import Layout from "@/components/Layout";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { Carousel } from 'react-responsive-carousel';
+import ModalMessages from '@/components/ModalMessages';
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // Import the CSS for the carousel
 import Image from 'next/image';
 import logo1 from '@@/img/logo3.png';
@@ -14,6 +15,8 @@ const Home = () => {
     { src: logo2, alt: "Promoción 2" },
     { src: logo3, alt: "Promoción 3" },
   ]); // Array con imágenes y descripciones
+
+  const [isOpenMess, setIsOpenMess] = useState(false);
 
   const router = useRouter();
 
@@ -40,7 +43,6 @@ const Home = () => {
                     src={img.src} 
                     alt={img.alt} 
                     width={600} 
-                    objectFit="contain"
                     priority={true}
                   />
                 </div>
@@ -49,10 +51,9 @@ const Home = () => {
           ) : (
             <div className="flex justify-center items-center">
               <Image
-                src="/default-promotion.jpg"
+                src={logo1}
                 alt="Imagen de promoción por defecto"
                 width={800}
-                objectFit="contain"
                 className="rounded-lg shadow-lg"
               />
             </div>
@@ -65,10 +66,12 @@ const Home = () => {
       {/* Botón de mensaje estático */}
       <button
         className="fixed bottom-20 right-6 bg-blue-500 text-white py-2 px-4 rounded-full shadow-lg hover:bg-blue-600"
-        onClick={() => alert('Mensaje abierto')}
+        onClick={() => setIsOpenMess(true)}
       >
         Mensajes
       </button>
+
+      <ModalMessages isOpen={isOpenMess} closeModal={() => setIsOpenMess(false)}/>
     </Layout>
   );
 };

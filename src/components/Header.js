@@ -1,15 +1,22 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import Image from 'next/image';
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/20/solid'; // Íconos en v2
 import logo1 from '@@/img/logo3.png';
 import perfil from '@@/img/logo3.png'; // Imagen de perfil de prueba
 import Modal from './Modal';
+import ModalPatient from './ModalPatient';
+import Notification from './Notifications';
+import ModalAgenda from './ModalAgenda';
+
 
 const Header = () => {
   const router = useRouter();
   const [isPerfilModalOpen, setPerfilModalOpen] = useState(false);
   const [isMenuOpen, setMenuOpen] = useState(false); // Estado para el menú desplegable
+  const [isOpen, setIsOpen] = useState(false);
+  const [isOpenNot, setIsOpenNot] = useState(false);
+  const [isOpenAge, setIsOpenAge] = useState(false);
 
   // Define rutas donde debería aparecer el NavBar
   const showNavBar = ['/agenda', '/pacientes', '/notificaciones', '/promocion', '/home'].includes(router.pathname);
@@ -29,7 +36,7 @@ const Header = () => {
           />
           <div className={`${showNavBar ? 'flex flex-col text-white ms-2' : 'hidden'}`}>
             <h2 className="font-semibold">Bienvenido</h2>
-            <h2 className="font-semibold">Dentista [Nombre dentista]</h2>
+            <h2 className="font-semibold">Nombre dentista</h2>
           </div>
         </div>
 
@@ -45,7 +52,7 @@ const Header = () => {
           >
             <span className="sr-only">Open main menu</span>
             <svg className="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
-              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15" />
+              <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1h15M1 7h15M1 13h15" />
             </svg>
           </button>
         )}
@@ -61,16 +68,16 @@ const Header = () => {
                 <button onClick={() => setPerfilModalOpen(true)} className="hover:bg-blue-500 rounded-md p-1 text-white" aria-current="page">Perfil</button>
               </li>
               <li>
-                <button href="/agenda" className="hover:bg-blue-500 rounded-md p-1 text-white" aria-current="page">Agenda</button>
+                <button onClick={() => setIsOpenAge(true)} className="hover:bg-blue-500 rounded-md p-1 text-white" aria-current="page">Agenda</button>
               </li>
               <li>
-                <button href="/pacientes" className="hover:bg-blue-500 rounded-md p-1 text-white">Pacientes</button>
+                <button onClick={() => setIsOpen(true)} className="hover:bg-blue-500 rounded-md p-1 text-white">Pacientes</button>
               </li>
               <li>
-                <button href="/notificaciones" className="hover:bg-blue-500 rounded-md p-1 text-white">Notificaciones</button>
+                <button onClick={() => setIsOpenNot(true)} className="hover:bg-blue-500 rounded-md p-1 text-white">Notificaciones</button>
               </li>
               <li>
-                <button href="/promocion" className="hover:bg-blue-500 rounded-md p-1 text-white">Promoción</button>
+                <Link href="/promotion" className="hover:bg-blue-500 rounded-md p-1 text-white flex">Promociónes</Link>
               </li>
             </ul>
           </div>
@@ -83,29 +90,17 @@ const Header = () => {
         isOpen={isPerfilModalOpen}
         closeModal={() => setPerfilModalOpen(false)}
         title="Perfil del Dentista"
-      >
-        <div className="flex justify-center mb-4">
-          <Image
-            src={perfil}
-            alt="Perfil"
-            width={100}
-            height={100}
-            className="rounded-full"
-          />
-        </div>
-        <h3 className="text-center text-xl font-bold">Dr. [Nombre Dentista]</h3>
-        <div className="bg-gray-100 p-4 mt-4 rounded-lg shadow-md">
-          <h4 className="font-semibold text-lg mb-2">Información</h4>
-          <p><strong>Cédula Profesional:</strong> XXXXXXXX</p>
-          <p><strong>Teléfono:</strong> 123-456-7890</p>
-          <p><strong>Correo:</strong> dentista@ejemplo.com</p>
-        </div>
-        <div className="flex justify-end mt-4">
-          <button className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
-            Editar Perfil
-          </button>
-        </div>
-      </Modal>
+        perfil={perfil}
+      />
+        
+
+      <ModalPatient isOpen={isOpen} closeModal={() => setIsOpen(false)} />
+      
+      <Notification isOpen={isOpenNot} closeModal={() => setIsOpenNot(false)}/>
+      
+      <ModalAgenda isOpen={isOpenAge} closeModal={() => setIsOpenAge(false)}/>
+      
+      
 
     </header>
 
