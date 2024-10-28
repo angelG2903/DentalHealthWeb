@@ -74,10 +74,10 @@ const Header = () => {
                 <button onClick={() => setIsOpen(true)} className="hover:bg-blue-500 rounded-md p-1 text-white">Pacientes</button>
               </li>
               <li>
-                <button onClick={() => setIsOpenNot(true)} className="hover:bg-blue-500 rounded-md p-1 text-white">Notificaciones</button>
+                <Link href="/promotion" className="hover:bg-blue-500 rounded-md p-1 text-white flex">Promociónes</Link>
               </li>
               <li>
-                <Link href="/promotion" className="hover:bg-blue-500 rounded-md p-1 text-white flex">Promociónes</Link>
+                <button onClick={() => setIsOpenNot(true)} className="hover:bg-blue-500 rounded-md p-1 text-white">Notificaciones</button>
               </li>
             </ul>
           </div>

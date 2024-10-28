@@ -51,10 +51,10 @@ const ModalPacientes = ({ isOpen, closeModal, props }) => {
                                     <p>Última cita {paciente.lastAppointment}</p>
                                 </div>
                                 <div className="flex justify-between">
-                                    <Link href={"/expediente"} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                                    <Link href={"/mostrarExpedientes"} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
                                         Ver expediente
                                     </Link>
-                                    <Link href={"/examenDental"} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                                    <Link href={"/mostrarExamenDental"} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
                                         Ver examen dental
                                     </Link>
 

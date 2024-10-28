@@ -1,20 +1,55 @@
 import { useState } from "react";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUpload } from '@fortawesome/free-solid-svg-icons';
 
 const ModalPromotion = ({ isOpen, closeModal }) => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [image, setImage] = useState(null);
+    const [promotionalImage, setImage] = useState(null);
 
     const handleImageUpload = (e) => {
         setImage(e.target.files[0]);
+        console.log(promotionalImage)
     };
 
-    const handleSave = () => {
-        // Aquí iría la lógica para guardar la promoción
-        console.log({ title, description, image });
-        closeModal(); // Cierra el modal después de guardar
+    const handleSave = async (e) => {
+        e.preventDefault();
+
+        console.log({ title, description, promotionalImage });
+        
+        const formDataToSend = new FormData();
+
+        formDataToSend.append('title', title);
+        formDataToSend.append('description', description);
+
+        if (promotionalImage) {
+            formDataToSend.append('promotionalImage', promotionalImage);
+        }
+
+        try {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+            const response = await fetch(`${apiUrl}/api/promotion/create/${15}`, {
+                method: "POST",
+                body: formDataToSend,
+            });
+
+            if (response.ok) {
+
+                setTitle('');
+                setDescription('');
+                setImage(null);
+
+                const result = await response.json();
+                console.log("Datos guardados exitosamente:", result);
+                console.log(JSON.stringify({ formDataToSend }));
+                closeModal(); // Cierra el modal después de guardar
+            } else {
+                console.error("Error al guardar los datos");
+                console.log(JSON.stringify({ formDataToSend }));
+                const errorMessage = await response.text();
+                alert(`Error al guardar el examen dental: ${response.status} - ${response.statusText}\nMensaje: ${errorMessage}`);
+            }
+        } catch (error) {
+            console.error("Error de red:", error);
+        }
     };
 
     if (!isOpen) return null;
@@ -29,58 +64,61 @@ const ModalPromotion = ({ isOpen, closeModal }) => {
                 </div>
 
                 {/* Cuerpo del modal */}
-                <div className="mt-4 space-y-4 mx-4">
-                    <div>
-                        <label htmlFor="title" className="block text-sm font-medium text-gray-700">Título</label>
-                        <input
-                            type="text"
-                            id="title"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            className="mt-1 block w-full border border-gray-300 
+                <form onSubmit={handleSave}>
+                    <div className="mt-4 space-y-4 mx-4">
+                        <div>
+                            <label htmlFor="title" className="block text-sm font-medium text-gray-700">Título</label>
+                            <input
+                                type="text"
+                                id="title"
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                                className="mt-1 block w-full border border-gray-300 
                                     rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring
                                     focus:border-blue-300"
-                            placeholder="Ingresa el título"
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="description" className="block text-sm font-medium text-gray-700">Descripción</label>
-                        <textarea
-                            id="description"
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            className="mt-1 block w-full border border-gray-300 
+                                placeholder="Ingresa el título"
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="description" className="block text-sm font-medium text-gray-700">Descripción</label>
+                            <textarea
+                                id="description"
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                className="mt-1 block w-full border border-gray-300 
                                             rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring
                                             focus:border-blue-300"
-                            placeholder="Ingresa la descripción"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-gray-700">Imagen</label>
-                        <input
-                            type="file"
-                            onChange={handleImageUpload}
-                            className="mt-1 block w-full text-sm text-gray-500
+                                placeholder="Ingresa la descripción"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-gray-700">Imagen</label>
+                            <input
+                                type="file"
+                                onChange={(e) => handleImageUpload(e)}
+                                className="mt-1 block w-full text-sm text-gray-500
                                         file:mr-4 file:py-2 file:px-4
                                         file:rounded-md file:border-0
                                         file:text-sm file:font-semibold
                                         file:bg-blue-50 file:text-blue-700
                                         hover:file:bg-blue-100 cursor-pointer"
-                            accept='image/*'
-                        />
+                                accept='image/*'
+                            />
+                        </div>
                     </div>
-                </div>
 
-                {/* Botones de acción */}
-                <div className="mt-6 flex justify-end space-x-2 mr-4 mb-4">
+                    {/* Botones de acción */}
+                    <div className="mt-6 flex justify-end space-x-2 mr-4 mb-4">
 
-                    <button
-                        onClick={handleSave}
-                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                    >
-                        Guardar
-                    </button>
-                </div>
+                        <button
+                            type="submit"
+                            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                        >
+                            Guardar
+                        </button>
+                    </div>
+                </form>
+
             </div>
         </div>
     );

@@ -75,9 +75,9 @@ const examenDental = () => {
                     <OdontogramaTable />
 
                     <div className="col-span-4 md:col-span-2">
-                        <div className="flex justify-center mt-4">
+                        <div className={`flex justify-center mt-4`}>
                             <button
-                                className={`px-4 py-2 rounded-l-3xl ${esAdulto === 'adult' ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+                                className={`px-4 py-2 rounded-l-3xl transition-colors duration-500 ${esAdulto === 'adult' ? "bg-blue-500 text-white" : "bg-gray-200"}`}
                                 onClick={() => {
                                     setDientes([]);
                                     setEsAdulto('adult');
@@ -86,7 +86,7 @@ const examenDental = () => {
                                 Adulto
                             </button>
                             <button
-                                className={`px-4 py-2 rounded-r-3xl ${esAdulto === 'child' ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+                                className={`px-4 py-2 rounded-r-3xl transition-colors duration-500 ${esAdulto === 'child' ? "bg-blue-500 text-white" : "bg-gray-200"}`}
                                 onClick={() => {
                                     setDientes([]);
                                     setEsAdulto('child');
