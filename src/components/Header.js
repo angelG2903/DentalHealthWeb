@@ -8,6 +8,9 @@ import Modal from './Modal';
 import ModalPatient from './ModalPatient';
 import Notification from './Notifications';
 import ModalAgenda from './ModalAgenda';
+import Cookies from 'js-cookie';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons';
 
 
 const Header = () => {
@@ -17,16 +20,31 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenNot, setIsOpenNot] = useState(false);
   const [isOpenAge, setIsOpenAge] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [caretDow, setCaretDow] = useState(true);
+
 
   // Define rutas donde debería aparecer el NavBar
   const showNavBar = ['/agenda', '/pacientes', '/notificaciones', '/promocion', '/home'].includes(router.pathname);
+
+  const toggleDropdown = () => {
+    setShowDropdown(!showDropdown);
+    setCaretDow(!caretDow);
+  };
+  const handleLogout = () => {
+    // Elimina la cookie del token
+    Cookies.remove('token');
+    setShowDropdown(false); // Cierra el menú desplegable
+    router.push('/'); // Redirige al usuario al login
+  };
 
   return (
     <header className={`bg-gradient-to-r from-blue-700 to-blue-600 ${showNavBar ? 'justify-between py-1' : 'justify-center py-2'} items-center px-6`}>
 
       <div className={`max-w-screen-xl flex flex-wrap items-center ${showNavBar ? 'justify-between' : 'justify-center'} mx-auto p-1`}>
 
-        <div className={`${showNavBar ? 'flex items-center' : ''}`}>
+        <div className={`${showNavBar ? 'flex items-center' : ''}`}
+        >
           <Image
             src={logo1}
             alt="Dental Health Logo"
@@ -34,10 +52,41 @@ const Header = () => {
             priority={true}
             className="rounded-full"
           />
-          <div className={`${showNavBar ? 'flex flex-col text-white ms-2' : 'hidden'}`}>
+          <div className={`${showNavBar ? ' flex flex-col text-white ms-2' : 'hidden'}`}>
             <h2 className="font-semibold">Bienvenido</h2>
-            <h2 className="font-semibold">Nombre dentista</h2>
+            <h2 className="font-semibold relative"
+              
+            >
+              Nombre dentista
+              <FontAwesomeIcon icon={caretDow ? faCaretDown: faCaretUp} size="1x" className="cursor-pointer text-white ml-2" onClick={toggleDropdown}/>
+
+              {/* Menú desplegable */}
+              {showDropdown && (
+                <div className="absolute mt-2 right-0 bg-white border border-gray-200 rounded-md shadow-lg w-40">
+                  <button
+                    className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
+                    onClick={() => {
+                      setPerfilModalOpen(true),
+                        setShowDropdown(false)
+                    }}
+                  >
+                    Ver perfil
+                  </button>
+                  <button
+                    className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
+                    onClick={handleLogout}
+                  >
+                    Cerrar sesión
+                  </button>
+                </div>
+              )}
+            </h2>
+
+
           </div>
+
+
+
         </div>
 
         {/* Botón de colapso para pantallas pequeñas */}
@@ -65,9 +114,6 @@ const Header = () => {
 
               {/* Opciones del menú */}
               <li>
-                <button onClick={() => setPerfilModalOpen(true)} className="hover:bg-blue-500 rounded-md p-1 text-white" aria-current="page">Perfil</button>
-              </li>
-              <li>
                 <button onClick={() => setIsOpenAge(true)} className="hover:bg-blue-500 rounded-md p-1 text-white" aria-current="page">Agenda</button>
               </li>
               <li>
@@ -92,15 +138,15 @@ const Header = () => {
         title="Perfil del Dentista"
         perfil={perfil}
       />
-        
+
 
       <ModalPatient isOpen={isOpen} closeModal={() => setIsOpen(false)} />
-      
-      <Notification isOpen={isOpenNot} closeModal={() => setIsOpenNot(false)}/>
-      
-      <ModalAgenda isOpen={isOpenAge} closeModal={() => setIsOpenAge(false)}/>
-      
-      
+
+      <Notification isOpen={isOpenNot} closeModal={() => setIsOpenNot(false)} />
+
+      <ModalAgenda isOpen={isOpenAge} closeModal={() => setIsOpenAge(false)} />
+
+
 
     </header>
 

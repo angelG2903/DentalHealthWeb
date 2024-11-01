@@ -1,5 +1,5 @@
 import Layout from "@/components/Layout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Carousel } from 'react-responsive-carousel';
 import ModalMessages from '@/components/ModalMessages';
@@ -20,13 +20,16 @@ const Home = () => {
 
   const router = useRouter();
 
+
+
   return (
     <Layout>
+    
       <div className="min-h-screen flex flex-col items-center justify-center py-4">
-        
+
         {/* Título */}
         <h1 className="text-2xl font-bold mb-4">Tus promociones publicadas</h1>
-        
+
         {/* Carrusel */}
         <div className="w-full max-w-96">
           {images.length > 0 ? (
@@ -39,10 +42,10 @@ const Home = () => {
             >
               {images.map((img, index) => (
                 <div key={index}>
-                  <Image 
-                    src={img.src} 
-                    alt={img.alt} 
-                    width={600} 
+                  <Image
+                    src={img.src}
+                    alt={img.alt}
+                    width={600}
                     priority={true}
                   />
                 </div>
@@ -60,7 +63,7 @@ const Home = () => {
           )}
         </div>
 
-        
+
       </div>
 
       {/* Botón de mensaje estático */}
@@ -71,7 +74,7 @@ const Home = () => {
         Mensajes
       </button>
 
-      <ModalMessages isOpen={isOpenMess} closeModal={() => setIsOpenMess(false)}/>
+      <ModalMessages isOpen={isOpenMess} closeModal={() => setIsOpenMess(false)} />
     </Layout>
   );
 };
