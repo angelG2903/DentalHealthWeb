@@ -1,17 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Image from 'next/image';
 import logo1 from '@@/img/logo3.png';
-import perfil from '@@/img/logo3.png'; // Imagen de perfil de prueba
 import Modal from './Modal';
 import ModalPatient from './ModalPatient';
 import Notification from './Notifications';
 import ModalAgenda from './ModalAgenda';
 import Cookies from 'js-cookie';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons';
+import { faCaretDown, faCaretUp, faBell } from '@fortawesome/free-solid-svg-icons';
+import io from 'socket.io-client';
 
+const socket = io('http://192.168.100.4:5000', {
+  transports: ['websocket']
+});
 
 const Header = () => {
   const router = useRouter();
@@ -22,7 +25,25 @@ const Header = () => {
   const [isOpenAge, setIsOpenAge] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [caretDow, setCaretDow] = useState(true);
+  const [hasNewNotification, setHasNewNotification] = useState(false);
 
+  useEffect(() => {
+    // Escuchar el evento de nueva notificación desde el servidor
+    socket.on('newNotification', (data) => {
+      console.log(data.message); // Ver mensaje de notificación en consola
+      setHasNewNotification(true); // Muestra el icono de notificación nueva
+    });
+
+    // Limpia el evento al desmontar el componente
+    return () => {
+      socket.off('newNotification');
+    };
+  }, []);
+
+  const handleOpenModal = () => {
+    setIsOpenNot(true);
+    setHasNewNotification(false); // Marca las notificaciones como vistas al abrir el modal
+  };
 
   // Define rutas donde debería aparecer el NavBar
   const showNavBar = ['/agenda', '/pacientes', '/notificaciones', '/promocion', '/home'].includes(router.pathname);
@@ -55,10 +76,10 @@ const Header = () => {
           <div className={`${showNavBar ? ' flex flex-col text-white ms-2' : 'hidden'}`}>
             <h2 className="font-semibold">Bienvenido</h2>
             <h2 className="font-semibold relative"
-              
+
             >
               Nombre dentista
-              <FontAwesomeIcon icon={caretDow ? faCaretDown: faCaretUp} size="1x" className="cursor-pointer text-white ml-2" onClick={toggleDropdown}/>
+              <FontAwesomeIcon icon={caretDow ? faCaretDown : faCaretUp} size="1x" className="cursor-pointer text-white ml-2" onClick={toggleDropdown} />
 
               {/* Menú desplegable */}
               {showDropdown && (
@@ -123,7 +144,20 @@ const Header = () => {
                 <Link href="/promotion" className="hover:bg-blue-500 rounded-md p-1 text-white flex">Promociónes</Link>
               </li>
               <li>
-                <button onClick={() => setIsOpenNot(true)} className="hover:bg-blue-500 rounded-md p-1 text-white">Notificaciones</button>
+                <button onClick={handleOpenModal} className="hover:bg-blue-500 rounded-md p-1 text-white sm:block md:hidden">Notificaciones</button>
+                <div className="relative cursor-pointer hover:bg-blue-500 rounded-md p-1 sm:hidden md:block" onClick={handleOpenModal}>
+                  {/* Icono de campana con animación */}
+                  <FontAwesomeIcon
+                    icon={faBell}
+                    size="lg"
+                    className={` text-white ${hasNewNotification ? 'animate-bounce' : ''}`}
+                  />
+
+                  {/* Punto rojo de notificación */}
+                  {hasNewNotification && (
+                    <div className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border-1 border-white"></div>
+                  )}
+                </div>
               </li>
             </ul>
           </div>
@@ -136,7 +170,6 @@ const Header = () => {
         isOpen={isPerfilModalOpen}
         closeModal={() => setPerfilModalOpen(false)}
         title="Perfil del Dentista"
-        perfil={perfil}
       />
 
 

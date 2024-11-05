@@ -37,7 +37,8 @@ const ModalPacientes = ({ isOpen, closeModal, props }) => {
                         placeholder="Buscar"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md mb-4"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md mb-4
+                        focus:outline-none focus:ring focus:border-blue-300"
                     />
                 </div>
 

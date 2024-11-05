@@ -1,7 +1,46 @@
 import Image from 'next/image';
+import Cookies from 'js-cookie';
+import { useEffect, useState } from 'react';
+import imagenP from '@@/img/logo3.png'; // Imagen de perfil de prueba
 
-const Modal = ({ isOpen, closeModal, title, perfil }) => {
-  if (!isOpen) return null; // Si no está abierto, no se renderiza
+
+const Modal = ({ isOpen, closeModal, title }) => {
+ 
+  const [perfil, setPerfil] = useState(null);
+
+  useEffect(() => {
+    if(isOpen){
+      fetchPerfilData();
+      
+    }
+
+  }, [!isOpen]);
+
+  const fetchPerfilData = async () => {
+    try {
+      const cookies = Cookies.get();
+      const token = cookies.token;
+      
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const response = await fetch(`${apiUrl}/api/auth/getDoctor`, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setPerfil(data);
+        console.log(data)
+      } else {
+        console.error('Error al obtener el perfil');
+      }
+    } catch (error) {
+      console.error('Error en la solicitud: ', error);
+    }
+
+  };
+
+  if (!isOpen || !perfil) return null;
 
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
@@ -22,19 +61,21 @@ const Modal = ({ isOpen, closeModal, title, perfil }) => {
 
           <div className="flex justify-center mb-4">
             <Image
-              src={perfil}
+              src={perfil.profilePictureUrl || imagenP}
               alt="Perfil"
-              width={100}
-              height={100}
-              className="rounded-full"
+              priority={true}
+              className="rounded"
+              width={200}
+              height={200}
+              quality={100}
             />
           </div>
-          <h3 className="text-center text-xl font-bold">Dr. [Nombre Dentista]</h3>
+          <h3 className="text-center text-xl font-bold">Dr. {perfil.Login?.name}</h3>
           <div className="bg-gray-100 p-4 mt-4 rounded-lg shadow-md">
             <h4 className="font-semibold text-lg mb-2">Información</h4>
-            <p><strong>Cédula Profesional:</strong> XXXXXXXX</p>
-            <p><strong>Teléfono:</strong> 123-456-7890</p>
-            <p><strong>Correo:</strong> dentista@ejemplo.com</p>
+            <p><strong>Cédula Profesional:</strong> {perfil.professionalLicense}</p>
+            <p><strong>Teléfono: </strong>{perfil.Login?.phoneNumber}</p>
+            <p><strong>Correo: </strong>{perfil.Login?.email}</p>
           </div>
           <div className="flex justify-end mt-4">
             <button className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">

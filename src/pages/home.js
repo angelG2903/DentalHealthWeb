@@ -8,6 +8,8 @@ import Image from 'next/image';
 import logo1 from '@@/img/logo3.png';
 import logo2 from '@@/img/logo4.png';
 import logo3 from '@@/img/logo5.png';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMessage } from '@fortawesome/free-solid-svg-icons';
 
 const Home = () => {
   const [images, setImages] = useState([
@@ -68,10 +70,14 @@ const Home = () => {
 
       {/* Botón de mensaje estático */}
       <button
-        className="fixed bottom-20 right-6 bg-blue-500 text-white py-2 px-4 rounded-full shadow-lg hover:bg-blue-600"
+        className="fixed bottom-20 right-10 bg-blue-500 text-white py-3.5 px-4 rounded-full shadow-lg hover:bg-blue-600"
         onClick={() => setIsOpenMess(true)}
       >
-        Mensajes
+        <FontAwesomeIcon
+          icon={faMessage}
+          size="lg"
+          className={`cursor-pointer text-white`}
+        />
       </button>
 
       <ModalMessages isOpen={isOpenMess} closeModal={() => setIsOpenMess(false)} />

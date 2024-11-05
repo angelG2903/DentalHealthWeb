@@ -1,13 +1,64 @@
-const ModalAgenda = ({ isOpen, closeModal }) => {
-   
-    if (!isOpen) return null;
+import { useEffect, useState } from "react";
+import Cookies from 'js-cookie';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMessage, faXmark } from '@fortawesome/free-solid-svg-icons';
 
-    const citas = [
-        { nombre: 'Lupita', descripcion: 'Ultima cita 02/03/2023', hora: '9:00 AM' },
-        { nombre: 'Jafet', descripcion: 'Primer cita', hora: '10:00 AM' },
-        { nombre: 'Victor', descripcion: 'Primer cita', hora: '11:00 AM' },
-        // Agrega más citas para probar el scroll
-    ];
+const ModalAgenda = ({ isOpen, closeModal }) => {
+
+    const [citas, setCitas] = useState(null);
+
+    useEffect(() => {
+        if (isOpen) {
+            fetchAppointmentsData();
+
+        }
+
+    }, [!isOpen]);
+
+    const fetchAppointmentsData = async () => {
+        try {
+            const cookies = Cookies.get();
+            const token = cookies.token;
+
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+            const response = await fetch(`${apiUrl}/api/appointment/getAppointments`, {
+                headers: {
+                    Authorization: `${token}`,
+                },
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setCitas(data);
+                console.log(data)
+            } else {
+                console.error('Error al obtener las citas');
+            }
+        } catch (error) {
+            console.error('Error en la solicitud: ', error);
+        }
+
+    };
+
+    function formatTimeTo12Hour(time) {
+        // Crea un objeto Date usando la hora en formato `HH:mm:ss`
+        const [hours, minutes, seconds] = time.split(':');
+        const date = new Date();
+        date.setHours(parseInt(hours), parseInt(minutes), parseInt(seconds));
+
+        // Usa toLocaleTimeString para formatear en 12 horas
+        return date.toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+    }
+
+    const today = new Date();
+    const options = { day: '2-digit', month: 'long', year: 'numeric' };
+    let formattedDate = today.toLocaleDateString('es-ES', options);
+    formattedDate = formattedDate.replace(/ de (\w+)/, (match, month) => ` de ${month.charAt(0).toUpperCase()}${month.slice(1)}`);
+
+    if (!isOpen || !citas) return null;
 
     return (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
@@ -22,7 +73,7 @@ const ModalAgenda = ({ isOpen, closeModal }) => {
 
                 {/* Sección de la fecha */}
                 <div className="p-4 text-center bg-blue-500 text-white">
-                    <p className="text-lg font-bold">May 5, 2024</p>
+                    <p className="text-lg font-bold">{formattedDate}</p>
                     <p className="text-sm">Hoy</p>
                     {/* Aquí podrías colocar un calendario si es necesario */}
                 </div>
@@ -33,13 +84,22 @@ const ModalAgenda = ({ isOpen, closeModal }) => {
                         citas.map((cita, index) => (
                             <div key={index} className="flex items-center mb-4 bg-white shadow-md rounded-lg">
                                 <div className="flex-1 p-4">
-                                    <p className="text-gray-800 font-bold">{cita.nombre}</p>
-                                    <p className="text-gray-600">{cita.descripcion}</p>
-                                    <p className="text-gray-500 text-sm">{cita.hora}</p>
+                                    <p className="text-gray-800 font-bold">{cita.Patient.Login.name}</p>
+                                    <p className="text-gray-600">Día: {cita.date}</p>
+                                    <p className="text-gray-500 text-sm">{formatTimeTo12Hour(cita.time)}</p>
                                 </div>
-                                <button className="mr-4 text-gray-500 hover:text-red-500">
-                                    ✕
-                                </button>
+                                <div className="flex flex-col space-y-6 mr-3">
+                                    <FontAwesomeIcon
+                                        icon={faMessage}
+                                        size="lg"
+                                        className={`cursor-pointer text-gray-500 hover:text-blue-500`}
+                                    />
+                                    <FontAwesomeIcon
+                                        icon={faXmark}
+                                        size="lg"
+                                        className={`cursor-pointer text-gray-500 hover:text-red-500`}
+                                    />
+                                </div>
                             </div>
                         ))
                     ) : (

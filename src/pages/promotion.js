@@ -11,21 +11,6 @@ const promotion = () => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-
-    const publicaciones = [
-        {
-            titulo: 'Blanqueamiento Dental',
-            descripcion: 'Aprovecha el 50% de descuento en nuestro tratamiento.',
-            imagen: logo1,
-        },
-        {
-            titulo: 'Limpieza Dental',
-            descripcion: 'Limpieza profunda con un 2x1 en citas.',
-            imagen: logo2,
-        },
-        // Puedes agregar más promociones aquí...
-    ];
-
     const [data, setData] = useState(null); // Estado para almacenar los datos
     const [error, setError] = useState(null); // Estado para almacenar errores de fetch
     const [loading, setLoading] = useState(true); // Estado para mostrar un indicador de carga
