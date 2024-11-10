@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen, faTrash, faEye } from '@fortawesome/free-solid-svg-icons';
+import { format } from 'date-fns';
 
 const MostrarListEx = ({title, content, data, linkH, message}) => {
+
 
     return (
 
@@ -10,21 +12,21 @@ const MostrarListEx = ({title, content, data, linkH, message}) => {
             <div className="w-3/4">
                 <h1 className="text-2xl font-medium text-center mt-8 mb-8">{title}</h1>
 
-                <div className="grid grid-cols-1 md:grid-cols-9 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-9 gap-6"> 
                     {data.map((expediente, index) => (
                         <div key={index} className="col-span-3 bg-white shadow-lg rounded-lg overflow-hidden">
 
                             <div className="grid grid-cols-3">
                                 <div className="col-span-3 p-4">
-                                    <h3 className="text-base font-blod mb-4">{content}: {expediente.numeroExpediente}</h3>
+                                    <h3 className="text-base font-blod mb-4">{content}: {expediente.id}</h3>
 
-                                    <p className="text-gray-600">Fecha: {expediente.fecha}</p>
-                                    <p className="text-gray-600">Hora: {expediente.hora}</p>
+                                    <p className="text-gray-600">Fecha: {format(new Date(expediente.createdAt), 'dd/MM/yyyy')}</p>
+                                    <p className="text-gray-600">Hora: {format(new Date(expediente.createdAt), 'hh:mm a')}</p>
                                 </div>
 
                                 <div className="col-span-3 grid grid-cols-3 bg-blue-500">
                                     <div className="relative group">
-                                        <button className="text-white w-full bg-green-500 transform transition-transform duration-200 scale-100 hover:scale-110 p-2">
+                                        <button className="text-white w-full transform transition-transform duration-200 scale-100 hover:scale-110 p-2">
                                             <FontAwesomeIcon icon={faEye} size="1x" className="text-white" />
                                         </button>
                                         <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block bg-gray-800 text-white text-xs rounded-lg px-2 py-1 whitespace-nowrap">
@@ -32,7 +34,7 @@ const MostrarListEx = ({title, content, data, linkH, message}) => {
                                         </div>
                                     </div>
 
-                                    {/* Botón Editar */}
+                                    
                                     <div className="relative group">
                                         <button className="text-white w-full transform transition-transform duration-200 scale-100 hover:scale-110 p-2">
                                             <FontAwesomeIcon icon={faPen} size="1x" className="text-white" />
@@ -42,9 +44,9 @@ const MostrarListEx = ({title, content, data, linkH, message}) => {
                                         </div>
                                     </div>
 
-                                    {/* Botón Eliminar */}
+                                    
                                     <div className="relative group">
-                                        <button className="text-white w-full bg-red-500 transform transition-transform duration-200 scale-100 hover:scale-110 p-2">
+                                        <button className="text-white w-full transform transition-transform duration-200 scale-100 hover:scale-110 p-2">
                                             <FontAwesomeIcon icon={faTrash} size="1x" className="text-white" />
                                         </button>
                                         <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block bg-gray-800 text-white text-xs rounded-lg px-2 py-1 whitespace-nowrap">

@@ -12,58 +12,99 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMessage } from '@fortawesome/free-solid-svg-icons';
 
 const Home = () => {
-  const [images, setImages] = useState([
-    { src: logo1, alt: "Promoción 1" },
-    { src: logo2, alt: "Promoción 2" },
-    { src: logo3, alt: "Promoción 3" },
-  ]); // Array con imágenes y descripciones
+  const router = useRouter();
+  const [data, setData] = useState(null); // Estado para almacenar los datos
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Función para hacer la solicitud GET
+    const fetchData = async () => {
+        try {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+            const response = await fetch(`${apiUrl}/api/promotion/get`); // URL de la API
+            if (!response.ok) {
+                throw new Error('Error en la solicitud');
+            }
+
+            const data = await response.json(); // Convierte la respuesta en un objeto JSON
+            setData(data); // Guarda los datos en el estado
+        } catch (error) {
+            setError(error.message); // Guarda el error en el estado
+        } finally {
+            setLoading(false); // Oculta el indicador de carga
+        }
+    };
+    
+    fetchData(); // Llama a la función fetchData cuando se monta el componente
+}, []);
 
   const [isOpenMess, setIsOpenMess] = useState(false);
 
-  const router = useRouter();
 
-
+  if (error) return <p>Error: {error}</p>;
 
   return (
     <Layout>
-    
-      <div className="min-h-screen flex flex-col items-center justify-center py-4">
+
+      <div className="min-h-screen flex flex-col items-center justify-center py-4 bg-gray-50">
 
         {/* Título */}
         <h1 className="text-2xl font-bold mb-4">Tus promociones publicadas</h1>
 
         {/* Carrusel */}
-        <div className="w-full max-w-96">
-          {images.length > 0 ? (
-            <Carousel
-              showThumbs={false}
-              infiniteLoop
-              autoPlay
-              interval={3000}
-              showArrows
-            >
-              {images.map((img, index) => (
-                <div key={index}>
-                  <Image
-                    src={img.src}
-                    alt={img.alt}
-                    width={600}
-                    priority={true}
-                  />
-                </div>
-              ))}
-            </Carousel>
-          ) : (
-            <div className="flex justify-center items-center">
-              <Image
-                src={logo1}
-                alt="Imagen de promoción por defecto"
-                width={800}
-                className="rounded-lg shadow-lg"
-              />
-            </div>
-          )}
-        </div>
+        {loading ? (
+          <div className="flex justify-center items-center h-56">
+            <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
+          </div>
+        ): (
+          <div className="w-full max-w-96 md:max-w-xl">
+            {data.length > 0 ? (
+              <Carousel
+                showStatus={false}
+                showThumbs={false}
+                infiniteLoop
+                autoPlay
+                interval={3000}
+                showArrows
+                showIndicators={false}
+              >
+                {data.map((promotion, index) => (
+                  <div key={index} className="flex flex-col bg-white rounded-xl overflow-hidden">
+                    {/* Imagen */}
+                    <div className="relative w-full h-64">
+                      <Image
+                        src={promotion.promotionalImageUrl || logo2} // Usa una imagen por defecto si no hay src
+                        alt={"Imagen por defecto"}
+                        width={600}
+                        height={400}
+                        priority={true}
+                        className="object-cover w-full h-full"
+                      />
+                    </div>
+                    {/* Card content */}
+                    <div className="p-4">
+                      {/* Título */}
+                      <h3 className="text-xl font-bold text-gray-800 break-words w-full">{promotion.title || "Título por defecto"}</h3>
+                      {/* Descripción */}
+                      <p className="text-gray-600 mt-2 break-words w-full">{promotion.description || "Descripción por defecto"}</p>
+                    </div>
+                  </div>
+                ))}
+              </Carousel>
+            ) : (
+              <div className="flex justify-center items-center">
+                <Image
+                  src={logo1}
+                  alt="Imagen de promoción por defecto"
+                  width={800}
+                  className="rounded-lg shadow-lg"
+                />
+              </div>
+            )}
+          </div>
+        )}
+
 
 
       </div>

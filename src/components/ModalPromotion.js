@@ -1,55 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const ModalPromotion = ({ isOpen, closeModal }) => {
+const ModalPromotion = ({ isOpen, closeModal, promotionData, onSave }) => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [promotionalImage, setImage] = useState(null);
 
+    useEffect(() => {
+        if (promotionData) {
+            setTitle(promotionData.title || '');
+            setDescription(promotionData.description || '');
+            setImage(null); // No cargamos la imagen anterior para edición
+        }
+    }, [promotionData]);
+
     const handleImageUpload = (e) => {
         setImage(e.target.files[0]);
-        console.log(promotionalImage)
     };
 
     const handleSave = async (e) => {
         e.preventDefault();
 
-        console.log({ title, description, promotionalImage });
-        
         const formDataToSend = new FormData();
-
         formDataToSend.append('title', title);
         formDataToSend.append('description', description);
-
         if (promotionalImage) {
             formDataToSend.append('promotionalImage', promotionalImage);
         }
 
-        try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-            const response = await fetch(`${apiUrl}/api/promotion/create/${15}`, {
-                method: "POST",
-                body: formDataToSend,
-            });
+        onSave(formDataToSend);
 
-            if (response.ok) {
-
-                setTitle('');
-                setDescription('');
-                setImage(null);
-
-                const result = await response.json();
-                console.log("Datos guardados exitosamente:", result);
-                console.log(JSON.stringify({ formDataToSend }));
-                closeModal(); // Cierra el modal después de guardar
-            } else {
-                console.error("Error al guardar los datos");
-                console.log(JSON.stringify({ formDataToSend }));
-                const errorMessage = await response.text();
-                alert(`Error al guardar el examen dental: ${response.status} - ${response.statusText}\nMensaje: ${errorMessage}`);
-            }
-        } catch (error) {
-            console.error("Error de red:", error);
-        }
+        
     };
 
     if (!isOpen) return null;
@@ -59,7 +39,9 @@ const ModalPromotion = ({ isOpen, closeModal }) => {
             <div className="bg-white rounded-lg w-11/12 md:w-1/3">
                 {/* Encabezado del modal */}
                 <div className="flex justify-between items-center pb-3 border-b p-3 bg-blue-500 rounded-t-lg">
-                    <h3 className="text-xl font-semibold text-white">Crear promoción</h3>
+                    <h3 className="text-xl font-semibold text-white">
+                        {promotionData ? 'Editar promoción' : 'Crear promoción'}
+                    </h3>
                     <button onClick={closeModal} className="text-white">✕</button>
                 </div>
 
@@ -114,7 +96,7 @@ const ModalPromotion = ({ isOpen, closeModal }) => {
                             type="submit"
                             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                         >
-                            Guardar
+                            {promotionData ? 'Actualizar' : 'Guardar'}
                         </button>
                     </div>
                 </form>

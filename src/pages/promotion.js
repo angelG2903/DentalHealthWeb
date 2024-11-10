@@ -6,10 +6,16 @@ import logo2 from '@@/img/logo4.png';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
 import ModalPromotion from '@/components/ModalPromotion';
+import ConfirmationModal from '@/components/ConfirmationModal';
+import MessageNotification from '@/components/MessageNotification';
 
 const promotion = () => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false); // Estado para el modal de confirmación
+    const [promotionToDelete, setPromotionToDelete] = useState(null); // Promoción seleccionada para eliminar
+    const [notification, setNotification] = useState({ message: "", type: "" }); // Estado para el mensaje de notificación
+    const [promotionData, setPromotionData] = useState(null);
 
     const [data, setData] = useState(null); // Estado para almacenar los datos
     const [error, setError] = useState(null); // Estado para almacenar errores de fetch
@@ -33,27 +39,99 @@ const promotion = () => {
                 setLoading(false); // Oculta el indicador de carga
             }
         };
-        
 
         fetchData(); // Llama a la función fetchData cuando se monta el componente
-    }, []); // El arreglo vacío [] hace que se ejecute solo una vez al montar el componente
+    }, [isModalOpen]);
+
+    useEffect(() => {
+        // Reset promotionData when modal is closed
+        if (!isModalOpen) {
+            setPromotionData(null);
+        }
+    }, [isModalOpen]); // This will run every time isModalOpen changes
+
+
+    const openEditModal = (promotion) => {
+        setPromotionData(promotion);
+        setIsModalOpen(true);
+    };
+
+    const handleSavePromotion = async (formDataToSend) => {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const url = promotionData
+            ? `${apiUrl}/api/promotion/update/${promotionData.id}`
+            : `${apiUrl}/api/promotion/create/${15}`;
+
+        const method = promotionData ? 'PUT' : 'POST';
+
+        try {
+            const response = await fetch(url, {
+                method,
+                body: formDataToSend,
+            });
+
+            if (response.ok) {
+                // Actualizar la lista de promociones según sea necesario
+                setNotification({ message: "Promoción guardada exitosamente", type: "success" });
+            } else {
+                setNotification({ message: "Hubo un error al guardar la promoción", type: "error" });
+            }
+        } catch (error) {
+            console.error("Error al guardar la promoción:", error);
+            setNotification({ message: "Ocurrió un error al intentar guardar la promoción.", type: "error" });
+        } finally {
+            setIsModalOpen(false);
+            setPromotionData(null);
+        }
+    };
+
+
+    const confirmDelete = (id) => {
+        setPromotionToDelete(id);
+        setIsConfirmModalOpen(true);
+    };
+
+    const handleDelete = async () => {
+        try {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+            const response = await fetch(`${apiUrl}/api/promotion/delete/${promotionToDelete}`, {
+                method: "DELETE",
+            });
+            if (response.ok) {
+                setData(data.filter((publicacion) => publicacion.id !== promotionToDelete));
+                setNotification({ message: "Promoción eliminada exitosamente", type: "success" });
+            } else {
+                setNotification({ message: "Hubo un error al eliminar la promoción", type: "error" });
+            }
+        } catch (error) {
+            console.error("Error al eliminar la promoción:", error);
+            setNotification({ message: "Ocurrió un error al intentar eliminar la promoción.", type: "error" });
+        } finally {
+            setIsConfirmModalOpen(false);
+            setPromotionToDelete(null);
+        }
+    };
 
     // Mostrar un mensaje de carga mientras se obtienen los datos
-    if (loading) return <p>Cargando...</p>;
-    console.log(data)
-
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center h-56">
+                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
+            </div>
+        );
+    }
     // Mostrar un mensaje de error si ocurrió un problema
     if (error) return <p>Error: {error}</p>;
 
     return (
         <Layout>
-            <div className="min-h-screen bg-white flex justify-center py-8">
+            <div className="min-h-screen bg-gray-100 flex justify-center py-8">
                 <div className="w-3/4">
                     <h1 className="text-2xl font-medium text-center mt-8 mb-8">Promociones</h1>
 
                     <div className="grid grid-cols-1 md:grid-cols-6 gap-6 ">
                         {data.map((publicacion, index) => (
-                            <div key={index} className="col-span-3 grid grid-cols-12 bg-white shadow-lg rounded-lg overflow-hidden h-52">
+                            <div key={index} className="col-span-3 grid grid-cols-12 bg-white shadow-xl rounded-lg overflow-hidden h-52">
                                 {/* Imagen de la promoción */}
 
                                 <div className="col-span-5">
@@ -76,7 +154,7 @@ const promotion = () => {
                                             className="object-cover w-full"
                                         />
                                     )}
-                                    
+
 
                                 </div>
 
@@ -86,10 +164,13 @@ const promotion = () => {
                                     <p className="text-gray-600">{publicacion.description}</p>
                                 </div>
 
-                                {/* Botón para editar */}
-                                <div className="col-span-1 bg-blue-500 grid">
+
+                                <div className="col-span-1 grid bg-blue-500">
                                     <div className="relative group">
-                                        <button className="text-white h-full w-full transform transition-transform duration-200 scale-100 hover:scale-110 p-2">
+                                        <button
+                                            onClick={() => openEditModal(publicacion)}
+                                            className="text-white h-full w-full transform transition-transform duration-200 scale-100 hover:scale-110 p-2"
+                                        >
                                             <FontAwesomeIcon icon={faPen} size="1x" className="text-white" />
                                         </button>
                                         <div className="absolute bottom-8 -left-7 transform -translate-x-1/2 mb-2 hidden group-hover:block bg-gray-800 text-white text-xs rounded-lg px-2 py-1 whitespace-nowrap">
@@ -97,7 +178,10 @@ const promotion = () => {
                                         </div>
                                     </div>
                                     <div className="relative group">
-                                        <button className="text-white h-full w-full bg-red-500 transform transition-transform duration-200 scale-100 hover:scale-110 p-2">
+                                        <button
+                                            onClick={() => confirmDelete(publicacion.id)}
+                                            className="text-white h-full w-full transform transition-transform duration-200 scale-100 hover:scale-110 p-2"
+                                        >
                                             <FontAwesomeIcon icon={faTrash} size="1x" className="text-white" />
                                         </button>
                                         <div className="absolute bottom-8 -left-7 transform -translate-x-1/2 mb-2 hidden group-hover:block bg-gray-800 text-white text-xs rounded-lg px-2 py-1 whitespace-nowrap">
@@ -133,7 +217,29 @@ const promotion = () => {
                     </button>
 
 
-                    <ModalPromotion isOpen={isModalOpen} closeModal={() => setIsModalOpen(false)} />
+                    <ModalPromotion
+                        isOpen={isModalOpen}
+                        closeModal={() => setIsModalOpen(false)}
+                        promotionData={promotionData}
+                        onSave={handleSavePromotion}
+                    />
+
+                    <ConfirmationModal
+                        isOpen={isConfirmModalOpen}
+                        onConfirm={handleDelete}
+                        title={"¿Eliminar promoción?"}
+                        message={"¿Estás seguro de que deseas eliminar esta promoción? Esta acción no se puede deshacer."}
+                        onCancel={() => setIsConfirmModalOpen(false)}
+                    />
+
+                    {/* Renderizar la notificación si hay un mensaje */}
+                    {notification.message && (
+                        <MessageNotification
+                            message={notification.message}
+                            type={notification.type}
+                            onClose={() => setNotification({ message: "", type: "" })}
+                        />
+                    )}
 
                 </div>
             </div>
