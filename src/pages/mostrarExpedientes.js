@@ -33,7 +33,6 @@ const mostrarExpedientes = () => {
 
         fetchData(); // Llama a la función fetchData cuando se monta el componente
     }, [id]);
-    console.log(data);
 
     if (loading) {
         return (
@@ -51,6 +50,7 @@ const mostrarExpedientes = () => {
                 content={"Expediente"} 
                 linkH={"/expediente"}
                 message={"Crear expediente"}
+                setData={setData}
             />
         </Layout>
     )

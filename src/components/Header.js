@@ -9,7 +9,7 @@ import Notification from './Notifications';
 import ModalAgenda from './ModalAgenda';
 import Cookies from 'js-cookie';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCaretDown, faCaretUp, faBell } from '@fortawesome/free-solid-svg-icons';
+import { faCaretDown, faCaretUp, faBell, faHome } from '@fortawesome/free-solid-svg-icons';
 import io from 'socket.io-client';
 
 const socket = io('http://192.168.100.4:5000', {
@@ -18,6 +18,7 @@ const socket = io('http://192.168.100.4:5000', {
 
 const Header = () => {
   const router = useRouter();
+  const currentRoute = router.pathname;
   const [isPerfilModalOpen, setPerfilModalOpen] = useState(false);
   const [isMenuOpen, setMenuOpen] = useState(false); // Estado para el menú desplegable
   const [isOpen, setIsOpen] = useState(false);
@@ -46,7 +47,7 @@ const Header = () => {
   };
 
   // Define rutas donde debería aparecer el NavBar
-  const showNavBar = ['/agenda', '/pacientes', '/notificaciones', '/promocion', '/home'].includes(router.pathname);
+  const showNavBar = ['/agenda', '/pacientes', '/notificaciones', '/promocion', '/home', '/mostrarExpedientes', '/promotion'].includes(router.pathname);
 
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
@@ -134,15 +135,30 @@ const Header = () => {
             <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-whit">
 
               {/* Opciones del menú */}
+              {currentRoute !== '/home' && (
+                <li>
+                  <Link href="/home" className="hover:bg-blue-500 rounded-md p-1 text-white inline-block">
+                    <FontAwesomeIcon
+                      icon={faHome}
+                      size="lg"
+                      className={` text-white`}
+                    />
+                  </Link>
+                </li>
+              )}
               <li>
                 <button onClick={() => setIsOpenAge(true)} className="hover:bg-blue-500 rounded-md p-1 text-white" aria-current="page">Agenda</button>
               </li>
-              <li>
-                <button onClick={() => setIsOpen(true)} className="hover:bg-blue-500 rounded-md p-1 text-white">Pacientes</button>
-              </li>
-              <li>
-                <Link href="/promotion" className="hover:bg-blue-500 rounded-md p-1 text-white flex">Promociónes</Link>
-              </li>
+              {currentRoute !== '/mostrarExpedientes' && (
+                <li>
+                  <button onClick={() => setIsOpen(true)} className="hover:bg-blue-500 rounded-md p-1 text-white">Pacientes</button>
+                </li>
+              )}
+              {currentRoute !== '/promotion' && (
+                <li>
+                  <Link href="/promotion" className="hover:bg-blue-500 rounded-md p-1 text-white flex">Promociónes</Link>
+                </li>
+              )}
               <li>
                 <button onClick={handleOpenModal} className="hover:bg-blue-500 rounded-md p-1 text-white sm:block md:hidden">Notificaciones</button>
                 <div className="relative cursor-pointer hover:bg-blue-500 rounded-md p-1 sm:hidden md:block" onClick={handleOpenModal}>
