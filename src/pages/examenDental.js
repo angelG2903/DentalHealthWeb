@@ -3,6 +3,7 @@ import { useState } from "react";
 import Layout from '@/components/Layout';
 import OdontogramaTable from '@/components/OdontogramaTable';
 import Diente from "../components/Diente";
+import { useRouter } from "next/router";
 // import { dientesAdulto, dientesNino } from "../data/dientes";
 
 const dientesAdulto = [18, 17, 16, 15, 14, 13, 12, 11, 21, 22, 23, 24, 25, 26, 27, 28, 31, 32, 33, 34, 35, 36, 37, 38, 48, 47, 46, 45, 44, 43, 42, 41,];
@@ -19,6 +20,8 @@ const cuadrantes = {
 };
 
 const examenDental = () => {
+    const router = useRouter();
+    const { id } = router.query;
 
     const [esAdulto, setEsAdulto] = useState('adult');
 
@@ -44,7 +47,7 @@ const examenDental = () => {
         // Aquí puedes enviar `dientes` a la API o procesarlos según necesites
         try {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-            const response = await fetch(`${apiUrl}/api/dentalExam/create/${12}`, {
+            const response = await fetch(`${apiUrl}/api/dentalExam/create/${id}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -55,6 +58,7 @@ const examenDental = () => {
             if (response.ok) {
                 const result = await response.json();
                 console.log("Datos guardados exitosamente:", result);
+                router.push(`/mostrarExamenDental/?id=${id}`);
             } else {
                 console.error("Error al guardar los datos");
                 console.log(JSON.stringify({ dientes }));

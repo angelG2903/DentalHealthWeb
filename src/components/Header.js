@@ -47,7 +47,7 @@ const Header = () => {
   };
 
   // Define rutas donde debería aparecer el NavBar
-  const showNavBar = ['/agenda', '/pacientes', '/notificaciones', '/promocion', '/home', '/mostrarExpedientes', '/promotion'].includes(router.pathname);
+  const showNavBar = ['/agenda', '/pacientes', '/notificaciones', '/promocion', '/home', '/mostrarExpedientes', '/mostrarExamenDental', '/examenDental', '/promotion'].includes(router.pathname);
 
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
@@ -149,7 +149,7 @@ const Header = () => {
               <li>
                 <button onClick={() => setIsOpenAge(true)} className="hover:bg-blue-500 rounded-md p-1 text-white" aria-current="page">Agenda</button>
               </li>
-              {currentRoute !== '/mostrarExpedientes' && (
+              {currentRoute !== '/mostrarExpedientes' && currentRoute !== '/mostrarExamenDental' && currentRoute !== '/examenDental' && (
                 <li>
                   <button onClick={() => setIsOpen(true)} className="hover:bg-blue-500 rounded-md p-1 text-white">Pacientes</button>
                 </li>
