@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 
-const Diente = ({ num, actualizarEstadoDiente }) => {
+const Diente = ({ num, actualizarEstadoDiente, initialCondition, show  }) => {
     const [mostrarMenu, setMostrarMenu] = useState(false);
-    const [selectedCondition, setSelectedCondition] = useState(""); // Almacena la condición seleccionada
+    const [selectedCondition, setSelectedCondition] = useState(initialCondition || ""); // Almacena la condición seleccionada
     const menuRef = useRef(null);
 
     useEffect(() => {
@@ -31,7 +31,6 @@ const Diente = ({ num, actualizarEstadoDiente }) => {
     };
 
     const handleSelectCondition = (condicion) => {
-        console.log(condicion);
         setSelectedCondition(condicion); // Guarda la condición seleccionada
         setMostrarMenu(false);
         actualizarEstadoDiente(num, condicion); // Llamamos al callback para actualizar el formulario
@@ -54,10 +53,16 @@ const Diente = ({ num, actualizarEstadoDiente }) => {
         <div className="relative inline-block">
             
             <h1 className="ml-2">{num}</h1>
-            <div
-                className={`w-8 h-8 rounded-full border-2 cursor-pointer ${conditionColor}`}
-                onClick={handleClick}
-            />
+            {show === true ? (
+                <div
+                    className={`w-8 h-8 rounded-full border-2 ${conditionColor}`}
+                />  
+            ):(
+                <div
+                    className={`w-8 h-8 rounded-full border-2 cursor-pointer ${conditionColor}`}
+                    onClick={handleClick}
+                />
+            )}
 
             {/* Menú desplegable */}
             {mostrarMenu && (

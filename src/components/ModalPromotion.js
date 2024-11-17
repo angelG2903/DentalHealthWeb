@@ -10,6 +10,10 @@ const ModalPromotion = ({ isOpen, closeModal, promotionData, onSave }) => {
             setTitle(promotionData.title || '');
             setDescription(promotionData.description || '');
             setImage(null); // No cargamos la imagen anterior para edición
+        } else if (promotionData === null){
+            setTitle('');
+            setDescription('');
+            setImage(null);
         }
     }, [promotionData]);
 

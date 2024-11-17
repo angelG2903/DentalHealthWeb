@@ -9,6 +9,7 @@ const mostrarExamenDental = () => {
     const { id } = router.query;
 
     const [data, setData] = useState(null); // Estado para almacenar los datos
+    const [dataUser, setDataUser] = useState(null);
     const [error, setError] = useState(null); // Estado para almacenar errores de fetch
     const [loading, setLoading] = useState(true); // Estado para mostrar un indicador de carga
 
@@ -25,13 +26,20 @@ const mostrarExamenDental = () => {
 
                 const data = await response.json(); // Convierte la respuesta en un objeto JSON
                 setData(data); // Guarda los datos en el estado
+
+                const responseUser = await fetch(`${apiUrl}/api/auth/getPatient/${id}`); // URL de la API
+                if (!responseUser.ok) {
+                    throw new Error('Error al obtener los datos del Paciente');
+                }
+                const dataUserr = await responseUser.json(); // Convierte la respuesta en un objeto JSON
+                setDataUser(dataUserr);
             } catch (error) {
                 setError(error.message); // Guarda el error en el estado
             } finally {
                 setLoading(false); // Oculta el indicador de carga
             }
         };
-        console.log(data)
+
         fetchData(); // Llama a la función fetchData cuando se monta el componente
     }, [id]);
 
@@ -47,7 +55,15 @@ const mostrarExamenDental = () => {
         <Layout>
             <div className="min-h-screen bg-gray-100 flex justify-center py-8">
                 <div className="w-3/4">
-                    <h1 className="text-2xl font-medium text-center mt-8 mb-8">Examenes dentales de jonh</h1>
+                    {dataUser ? (
+                        <div>
+                            <h1 className="text-2xl font-medium text-center mt-8 mb-8">
+                                Examenes dentales de {dataUser.Login.name}
+                            </h1>
+                        </div>
+                    ) : (
+                        <p>No hay datos disponibles</p> // Mensaje en caso de que el array esté vacío
+                    )}
                     <MostrarListEx
                         data={data}
                         content={"Expediente dental"}

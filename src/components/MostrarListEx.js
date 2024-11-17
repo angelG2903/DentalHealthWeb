@@ -76,9 +76,17 @@ const MostrarListEx = ({ content, data, setData, deleteType, message }) => {
 
                                 <div className="col-span-3 grid grid-cols-3 bg-blue-500">
                                     <div className="relative group">
-                                        <button className="text-white w-full transform transition-transform duration-200 scale-100 hover:scale-110 p-2">
+                                        <Link href={{
+                                            pathname: `${deleteType ? "/expedienteEdit" : "/verExamenDental"}`,
+                                            query: {
+                                                id: expediente.id,
+                                                patId: expediente.Patient.id
+                                            }
+                                        }}
+                                            className="inline-block text-center text-white w-full transform transition-transform duration-200 scale-100 hover:scale-110 p-2"
+                                        >
                                             <FontAwesomeIcon icon={faEye} size="1x" className="text-white" />
-                                        </button>
+                                        </Link>
                                         <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block bg-gray-800 text-white text-xs rounded-lg px-2 py-1 whitespace-nowrap">
                                             Ver
                                         </div>
@@ -87,7 +95,7 @@ const MostrarListEx = ({ content, data, setData, deleteType, message }) => {
 
                                     <div className="relative group">
                                         <Link href={{
-                                            pathname: `${deleteType ? "/expedienteEdit" : "/CambiarRuta"}`,
+                                            pathname: `${deleteType ? "/expedienteEdit" : "/examenDentalEdit"}`,
                                             query: {
                                                 id: expediente.id,
                                                 patId: expediente.Patient.id

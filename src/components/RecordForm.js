@@ -4,9 +4,13 @@ import {
     handleHistory1Change, handleHistory2Change, handleHistory3Change, handleHistory4Change, handleHistory5Change
     , handleHistory6Change, handleHistory7Change, handleHistory8Change, handleCloseAlert
 } from '@/utils/formExpediente';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { useRouter } from 'next/router';
 
 const RecordForm = ({ initialData = {}, onSubmit, title }) => {
 
+    const router = useRouter();
     const [formData, setFormData] = useState({
         weight: '',
         size: '',
@@ -142,8 +146,8 @@ const RecordForm = ({ initialData = {}, onSubmit, title }) => {
     };
 
     useEffect(() => {
-          setFormData((prevData) => ({ ...prevData, ...initialData }));
-          console.log(initialData)
+        setFormData((prevData) => ({ ...prevData, ...initialData }));
+        console.log(initialData)
     }, []);
 
     const handleSubmit = (e) => {
@@ -173,7 +177,7 @@ const RecordForm = ({ initialData = {}, onSubmit, title }) => {
         formDataToSend.append('cardiovascular4', formData.cardiovascular4);
         formDataToSend.append('cardiovascular5', formData.cardiovascular5);
         formDataToSend.append('cardiovascular6', formData.cardiovascular6);
-        
+
         formDataToSend.append('disease1', formData.disease1);
         formDataToSend.append('disease2', formData.disease2);
         formDataToSend.append('disease3', formData.disease3);
@@ -282,10 +286,19 @@ const RecordForm = ({ initialData = {}, onSubmit, title }) => {
 
         onSubmit(formDataToSend);
     };
+    const handleGoBack = () => {
+        router.back();  // Regresa a la página anterior
+    };
 
     return (
         <div className="min-h-screen bg-gray-100 flex items-center justify-center py-8">
             <div className="w-3/4 bg-white rounded-lg shadow-lg p-8">
+                <button onClick={handleGoBack} className="inline-flex rounded-lg p-1 text-blue-600 text-xl hover:text-white hover:bg-blue-500">
+                    <FontAwesomeIcon
+                        icon={faArrowLeft}
+                        size="lg"
+                    />
+                </button>
                 <h2 className="text-2xl font-semibold mb-4 text-center">{title}</h2>
 
                 {/* Stepper */}
@@ -1023,7 +1036,7 @@ const RecordForm = ({ initialData = {}, onSubmit, title }) => {
                         </div>
                     )}
 
-                    
+
                     {notification && (
                         <div className="fixed top-4 right-4 bg-green-500 text-white p-2 rounded">
                             {notification}

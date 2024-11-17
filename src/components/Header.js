@@ -47,7 +47,7 @@ const Header = () => {
   };
 
   // Define rutas donde debería aparecer el NavBar
-  const showNavBar = ['/agenda', '/pacientes', '/notificaciones', '/promocion', '/home', '/mostrarExpedientes', '/mostrarExamenDental', '/examenDental', '/promotion'].includes(router.pathname);
+  const showNavBar = ['/agenda', '/pacientes', '/notificaciones', '/promocion', '/home', '/mostrarExpedientes', '/mostrarExamenDental', '/examenDental', '/examenDentalEdit', '/expedienteEdit', '/expediente', '/promotion'].includes(router.pathname);
 
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
@@ -135,7 +135,7 @@ const Header = () => {
             <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-whit">
 
               {/* Opciones del menú */}
-              {currentRoute !== '/home' && (
+              {currentRoute !== '/home' && currentRoute !== '/examenDentalEdit' && currentRoute !== '/examenDental' && currentRoute !== '/expedienteEdit' && currentRoute !== '/expediente' && (
                 <li>
                   <Link href="/home" className="hover:bg-blue-500 rounded-md p-1 text-white inline-block">
                     <FontAwesomeIcon
@@ -149,7 +149,7 @@ const Header = () => {
               <li>
                 <button onClick={() => setIsOpenAge(true)} className="hover:bg-blue-500 rounded-md p-1 text-white" aria-current="page">Agenda</button>
               </li>
-              {currentRoute !== '/mostrarExpedientes' && currentRoute !== '/mostrarExamenDental' && currentRoute !== '/examenDental' && (
+              {currentRoute !== '/mostrarExpedientes' && currentRoute !== '/mostrarExamenDental' && currentRoute !== '/examenDental' && currentRoute !== '/examenDentalEdit' && currentRoute !== '/expedienteEdit' && currentRoute !== '/expediente' && currentRoute !== '/promotion' && (
                 <li>
                   <button onClick={() => setIsOpen(true)} className="hover:bg-blue-500 rounded-md p-1 text-white">Pacientes</button>
                 </li>
