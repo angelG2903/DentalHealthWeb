@@ -19,6 +19,13 @@ const mostrarExpedientes = () => {
         const fetchData = async () => {
             try {
                 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+                const responseUser = await fetch(`${apiUrl}/api/auth/getPatient/${id}`); // URL de la API
+                if (!responseUser.ok) {
+                    throw new Error('Error al obtener los datos del Paciente');
+                }
+                const dataUserr = await responseUser.json(); // Convierte la respuesta en un objeto JSON
+                setDataUser(dataUserr);
+
                 const response = await fetch(`${apiUrl}/api/medicalForm/get/${id}`); // URL de la API
                 if (!response.ok) {
                     throw new Error('Error al obtener los expedientes');
@@ -26,12 +33,6 @@ const mostrarExpedientes = () => {
                 const data = await response.json(); // Convierte la respuesta en un objeto JSON
                 setData(data); // Guarda los datos en el estado
 
-                const responseUser = await fetch(`${apiUrl}/api/auth/getPatient/${id}`); // URL de la API
-                if (!responseUser.ok) {
-                    throw new Error('Error al obtener los datos del Paciente');
-                }
-                const dataUserr = await responseUser.json(); // Convierte la respuesta en un objeto JSON
-                setDataUser(dataUserr);
 
             } catch (error) {
                 setError(error.message); // Guarda el error en el estado
@@ -57,12 +58,16 @@ const mostrarExpedientes = () => {
                 <div className="w-3/4">
                     {dataUser ? (
                         <div>
-                            <h1 className="text-2xl font-medium text-center mt-8 mb-8">
-                                Expedientes de {dataUser.Login.name}
+                            <h1 className="text-2xl font-medium text-center mt-8 mb-5">
+                                Expedientes de {dataUser.Login.name} {dataUser.Login.lastName}
                             </h1>
+                            <div className="text-center mb-8">
+                                <p className="text-lg font-medium">Teléfono: {dataUser.Login.phoneNumber}</p>
+                                <p className="text-lg font-medium">Correo electrónico: {dataUser.Login.email}</p>
+                            </div>
                         </div>
                     ) : (
-                        <p>No hay datos disponibles</p> // Mensaje en caso de que el array esté vacío
+                        <p>No hay datos disponibles {dataUser}</p> // Mensaje en caso de que el array esté vacío
                     )}
                     <MostrarListEx
                         data={data}

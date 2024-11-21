@@ -21,7 +21,6 @@ const Formulario = () => {
         email: '',
         password: '',
         confirmPassword: '',
-        role: '',
         degree: '',
         professionalLicense: '',
         specialty: '',
@@ -42,7 +41,6 @@ const Formulario = () => {
         email: '',
         password: '',
         confirmPassword: '',
-        role: '',
         degree: '',
         professionalLicense: '',
         specialty: '',
@@ -149,8 +147,6 @@ const Formulario = () => {
             formDataToSend.append('phoneNumber', formData.phoneNumber);
             formDataToSend.append('email', formData.email);
             formDataToSend.append('password', formData.password);
-            formDataToSend.append('confirmPassword', formData.confirmPassword);
-            formDataToSend.append('role', formData.role);
             formDataToSend.append('degree', formData.degree);
             formDataToSend.append('professionalLicense', formData.professionalLicense);
             formDataToSend.append('specialty', formData.specialty);
@@ -190,7 +186,6 @@ const Formulario = () => {
                         email: '',
                         password: '',
                         confirmPassword: '',
-                        role: '',
                         degree: '',
                         professionalLicense: '',
                         specialty: '',
@@ -211,7 +206,6 @@ const Formulario = () => {
                         email: '',
                         password: '',
                         confirmPassword: '',
-                        role: '',
                         degree: '',
                         professionalLicense: '',
                         specialty: '',

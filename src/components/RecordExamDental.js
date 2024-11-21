@@ -20,12 +20,13 @@ const cuadrantes = {
     85: "Cuadrante 8"
 };
 
-const RecordExamDental = ({ initialData = [], onSubmit, title, validLife, viewData }) => {
+const RecordExamDental = ({ initialData = [], onSubmit, dataPatient = {}, title, validLife, viewData }) => {
 
     const router = useRouter();
     const [esAdulto, setEsAdulto] = useState('adult');
 
     const [dientes, setDientes] = useState([]);
+    const [dataP, setDataP] = useState({});
 
     const actualizarEstadoDiente = (toothNumber, state) => {
         setDientes((prevDientes) => {
@@ -56,6 +57,10 @@ const RecordExamDental = ({ initialData = [], onSubmit, title, validLife, viewDa
                 actualizarEstadoDiente(toothNumber, state);
             });
         }
+
+        if (Object.keys(dataPatient).length > 0) {
+            setDataP(dataPatient)
+        }
     }, []);
 
 
@@ -81,7 +86,25 @@ const RecordExamDental = ({ initialData = [], onSubmit, title, validLife, viewDa
                         />
                     </button>
                 </div>
-                <h1 className="text-center text-xl font-bold mb-8 col-span-4">{title}</h1>
+                {title ? (
+                    <h1 className="text-center text-xl font-bold mb-8 col-span-4">{title}</h1>
+                ) : dataP && Object.keys(dataP).length > 0 ? (
+                    <div className="mb-8 col-span-4">
+                        <h1 className="text-xl font-bold text-center mb-5">
+                            Paciente: {dataP.Login.name} {dataP.Login.lastName}{console.log(dataP)}
+                        </h1>
+                        <div className="text-center mb-8">
+                            <p className="text-lg font-medium">Teléfono: {dataP.Login.phoneNumber}</p>
+                            <p className="text-lg font-medium">Correo electrónico: {dataP.Login.email}</p>
+                        </div>
+
+                    </div>
+
+                ) : (
+                    <p className="text-center col-span-4 text-gray-500">
+                        No hay datos del paciente disponibles.
+                    </p>
+                )}
                 <OdontogramaTable />
 
                 <div className="col-span-4 md:col-span-2">
@@ -129,10 +152,10 @@ const RecordExamDental = ({ initialData = [], onSubmit, title, validLife, viewDa
                                         </div>
                                     )}
 
-                                    <Diente 
-                                        num={num} 
-                                        actualizarEstadoDiente={actualizarEstadoDiente} 
-                                        initialCondition={initialData.find(diente => diente.toothNumber === num)?.state || ""}  
+                                    <Diente
+                                        num={num}
+                                        actualizarEstadoDiente={actualizarEstadoDiente}
+                                        initialCondition={initialData.find(diente => diente.toothNumber === num)?.state || ""}
                                         show={viewData}
                                     />
                                 </div>
@@ -140,7 +163,7 @@ const RecordExamDental = ({ initialData = [], onSubmit, title, validLife, viewDa
 
 
                         </div>
-                        {dientes.length > 0 && viewData === false &&(
+                        {dientes.length > 0 && viewData === false && (
                             <div className="flex justify-center mt-8 mb-4">
                                 <button type="submit" className="bg-blue-500 text-white px-6 py-2 rounded-lg">Guardar</button>
                             </div>

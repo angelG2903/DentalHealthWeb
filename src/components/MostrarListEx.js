@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPen, faTrash, faEye } from '@fortawesome/free-solid-svg-icons';
+import { faPen, faTrash, faEye, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { format } from 'date-fns';
 import { useState } from "react";
 import ConfirmationModal from '@/components/ConfirmationModal';
@@ -127,8 +127,15 @@ const MostrarListEx = ({ content, data, setData, deleteType, message }) => {
                         </div>
                     ))
                 ) : (
-                    <div className="col-span-9 text-center">
-                        <p className="text-gray-500 text-lg">{message}</p>
+                    <div className="col-span-9 grid grid-cols-9 text-center mt-5 ">
+                        <div className="col-span-9 mx-auto bg-yellow-100 border border-yellow-300 text-yellow-700 rounded-lg p-5 shadow-md">
+                            <div className="flex justify-center items-center mb-3">
+                                <FontAwesomeIcon icon={faExclamationTriangle} size="2x" className="text-yellow-500" />
+                            </div>
+                            <p className="text-lg font-semibold">
+                                {message}
+                            </p>
+                        </div>
                     </div>
                 )}
 

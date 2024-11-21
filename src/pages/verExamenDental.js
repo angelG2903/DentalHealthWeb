@@ -9,6 +9,7 @@ const verExamenDental = () => {
     const router = useRouter();
     const { id, patId } = router.query;
     const [data, setData] = useState(null);
+    const [dataUser, setDataUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
@@ -18,6 +19,14 @@ const verExamenDental = () => {
         const fetchData = async () => {
             try {
                 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+                const responseUser = await fetch(`${apiUrl}/api/auth/getPatient/${patId}`); // URL de la API
+                if (!responseUser.ok) {
+                    throw new Error('Error al obtener los datos del Paciente');
+                }
+                const dataUserr = await responseUser.json(); // Convierte la respuesta en un objeto JSON
+                setDataUser(dataUserr);
+
+
                 const response = await fetch(`${apiUrl}/api/dentalExam/get/${id}`); // URL de la API
                 if (!response.ok) {
                     throw new Error('Error en la solicitud');
@@ -95,7 +104,7 @@ const verExamenDental = () => {
                 </div>
             )}
             
-            <RecordExamDental initialData={data} onSubmit={handleUpdateExam} title={"Datos del Expediente Dental [FECHA/HORA]"} validLife={true} viewData={true} />
+            <RecordExamDental initialData={data} dataPatient={dataUser} onSubmit={handleUpdateExam} validLife={true} viewData={true} />
         </Layout>
     )
 }
