@@ -12,7 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown, faCaretUp, faBell, faHome } from '@fortawesome/free-solid-svg-icons';
 import io from 'socket.io-client';
 
-const socket = io('http://192.168.100.4:5000', {
+const socket = io('http://192.168.100.23:5000', {
   transports: ['websocket']
 });
 
@@ -47,7 +47,7 @@ const Header = () => {
   };
 
   // Define rutas donde debería aparecer el NavBar
-  const showNavBar = ['/agenda', '/pacientes', '/notificaciones', '/promocion', '/home', '/mostrarExpedientes', '/mostrarExamenDental', '/examenDental', '/examenDentalEdit', '/expedienteEdit', '/expediente', '/promotion'].includes(router.pathname);
+  const showNavBar = ['/agenda', '/pacientes', '/notificaciones', '/promocion', '/home', '/mostrarExpedientes', '/mostrarExamenDental', '/examenDental', '/examenDentalEdit', '/expedienteEdit', '/expediente', '/promotion', '/formUserEdit'].includes(router.pathname);
 
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);

@@ -8,34 +8,29 @@ const ModalPacientes = ({ isOpen, closeModal, props }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Función para hacer la solicitud GET
-        const fetchData = async () => {
-            try {
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-                const response = await fetch(`${apiUrl}/api/auth/getPatient`); // URL de la API
-                if (!response.ok) {
-                    throw new Error('Error en la solicitud');
-                }
-                const data = await response.json(); // Convierte la respuesta en un objeto JSON
-                setData(data); // Guarda los datos en el estado
-            } catch (error) {
-                setError(error.message); // Guarda el error en el estado
-            } finally {
-                setLoading(false); // Oculta el indicador de carga
+        if (isOpen) {
+            fetchData();
+        }
+    }, [!isOpen]);
+
+
+    // Función para hacer la solicitud GET
+    const fetchData = async () => {
+        try {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+            const response = await fetch(`${apiUrl}/api/auth/getPatient`); // URL de la API
+            if (!response.ok) {
+                throw new Error('Error en la solicitud');
             }
-        };
+            const data = await response.json(); // Convierte la respuesta en un objeto JSON
+            setData(data); // Guarda los datos en el estado
+        } catch (error) {
+            setError(error.message); // Guarda el error en el estado
+        } finally {
+            setLoading(false); // Oculta el indicador de carga
+        }
+    };
 
-        fetchData(); // Llama a la función fetchData cuando se monta el componente
-    }, []);
-
-    // Lista de pacientes
-    /* const pacientes = [
-        { id: 1, name: 'Álvarez .....', lastAppointment: '26/05/2024' },
-        { id: 2, name: 'Arguello .....', lastAppointment: '26/05/2024' },
-        { id: 3, name: 'Bolaños .....', lastAppointment: '26/05/2024' },
-        { id: 4, name: 'Castillo .....', lastAppointment: '26/05/2024' },
-        { id: 5, name: 'Castillo .....', lastAppointment: '26/05/2024' },
-    ]; */
 
     // Filtra los pacientes en función del término de búsqueda
     /* const filteredPacientes = pacientes.filter((paciente) =>
@@ -43,9 +38,9 @@ const ModalPacientes = ({ isOpen, closeModal, props }) => {
     ); */
     const filteredPacientes = data
         ? data.filter((paciente) =>
-        paciente.Login.name.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    : [];
+            paciente.Login.name.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+        : [];
 
     if (!isOpen) return null;
     if (error) return <p>Error: {error}</p>;
@@ -90,15 +85,15 @@ const ModalPacientes = ({ isOpen, closeModal, props }) => {
                                         <Link href={{
                                             pathname: "/mostrarExpedientes",
                                             query: { id: paciente.id }
-                                            }} 
+                                        }}
                                             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                                         >
                                             Ver expediente
                                         </Link>
                                         <Link href={{
-                                                pathname: "/mostrarExamenDental",
-                                                query: { id: paciente.id }
-                                            }} 
+                                            pathname: "/mostrarExamenDental",
+                                            query: { id: paciente.id }
+                                        }}
                                             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                                         >
                                             Ver examen dental

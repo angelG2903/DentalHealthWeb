@@ -1,12 +1,11 @@
-import Layout from '@/components/Layout';
+import Layout from "@/components/Layout";
+import RecordUser from "@/components/RecordUser";
+import { useEffect, useState } from "react";
 import { useRouter } from 'next/router';
-import RecordForm from '@/components/RecordForm';
-import { useEffect, useState } from 'react';
 
-const expedienteEdit = () => {
-
+const formUserEdit = () => {
     const router = useRouter();
-    const { id, patId } = router.query;
+    const { id } = router.query;
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -16,57 +15,55 @@ const expedienteEdit = () => {
         const fetchData = async () => {
             try {
                 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-                const response = await fetch(`${apiUrl}/api/medicalForm/getExam/${id}`); // URL de la API
-                if (!response.ok) {
-                    throw new Error('Error en la solicitud');
+                const response = await fetch(`${apiUrl}/api/auth/getDoctorById/${id}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    const transformedData = {
+                        ...data,
+                        ...data.Login
+                    };
+                    delete transformedData.Login;
+                    // Transformar la fecha al formato `YYYY-MM-DD` si existe
+                    if (transformedData.birthDate) {
+                        transformedData.birthDate = new Date(transformedData.birthDate)
+                            .toISOString()
+                            .split('T')[0]; // Extraer solo `YYYY-MM-DD`
+                    }
+                    setData(transformedData);
+                    setLoading(false);
+                } else {
+                    console.error('Error al obtener la información');
                 }
 
-                const data = await response.json(); // Convierte la respuesta en un objeto JSON
-                const transformedData = {
-                    ...data,
-                    ...data.CardiovascularSystems[0], // Combina el primer elemento de CardiovascularSystems
-                    ...data.EtsDiseases[0],
-                    ...data.OralCavities[0],
-                    ...data.PathologicalHistories[0]
-                };
-                // Elimina las propiedades que ya no necesitas
-                delete transformedData.CardiovascularSystems;
-                delete transformedData.EtsDiseases;
-                delete transformedData.OralCavities;
-                delete transformedData.PathologicalHistories;
-
-                setData(transformedData); // Guarda los datos en el estado
             } catch (error) {
-                setError(error.message); // Guarda el error en el estado
+                setError(error.message);
+                setLoading(false);
             } finally {
-                setLoading(false); // Oculta el indicador de carga
+                setLoading(false);
             }
         };
-
-        fetchData(); // Llama a la función fetchData cuando se monta el componente
+        fetchData();
     }, [id]);
-
-
 
     const handleUpdateRecord = async (formData) => {
         try {
             // Enviar el formulario al servidor
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-            const response = await fetch(`${apiUrl}/api/medicalForm/update/${id}`, {
+            const response = await fetch(`${apiUrl}/api/auth/updateDoctor/${id}`, {
                 method: 'PUT',
-                body: formData, 
+                body: formData,
             });
 
             if (response.ok) {
                 console.log('Formulario actualizado con éxito');
                 console.log(formData);
 
-                // Redirigir al login
-                router.push(`/mostrarExpedientes?id=${patId}`);
+                // Redirigir al home
+                router.push(`/`);
 
             } else {
                 console.error('Error al enviar el formulario');
-                
+
                 setError('Error al enviar el formulario. Inténtalo de nuevo.',);
             }
         } catch (error) {
@@ -98,9 +95,9 @@ const expedienteEdit = () => {
                     </span>
                 </div>
             )}
-            <RecordForm initialData={data} onSubmit={handleUpdateRecord} title={"Editar expediente clinico"} />
+            <RecordUser initialData={data} onSubmit={handleUpdateRecord} title={"Editar Perfil"} editUser={true} />
         </Layout>
     )
 }
 
-export default expedienteEdit;
+export default formUserEdit;

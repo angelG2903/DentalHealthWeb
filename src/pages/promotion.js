@@ -60,7 +60,7 @@ const promotion = () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         const url = promotionData
             ? `${apiUrl}/api/promotion/update/${promotionData.id}`
-            : `${apiUrl}/api/promotion/create/${15}`;
+            : `${apiUrl}/api/promotion/create/${2}`;
 
         const method = promotionData ? 'PUT' : 'POST';
 

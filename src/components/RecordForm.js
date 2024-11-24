@@ -147,7 +147,6 @@ const RecordForm = ({ initialData = {}, onSubmit, title }) => {
 
     useEffect(() => {
         setFormData((prevData) => ({ ...prevData, ...initialData }));
-        console.log(initialData)
     }, []);
 
     const handleSubmit = (e) => {

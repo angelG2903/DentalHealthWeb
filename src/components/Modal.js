@@ -2,16 +2,17 @@ import Image from 'next/image';
 import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
 import imagenP from '@@/img/logo3.png'; // Imagen de perfil de prueba
+import Link from 'next/link';
 
 
 const Modal = ({ isOpen, closeModal, title }) => {
- 
+
   const [perfil, setPerfil] = useState(null);
 
   useEffect(() => {
-    if(isOpen){
+    if (isOpen) {
       fetchPerfilData();
-      
+
     }
 
   }, [!isOpen]);
@@ -20,7 +21,7 @@ const Modal = ({ isOpen, closeModal, title }) => {
     try {
       const cookies = Cookies.get();
       const token = cookies.token;
-      
+
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
       const response = await fetch(`${apiUrl}/api/auth/getDoctor`, {
         headers: {
@@ -78,9 +79,15 @@ const Modal = ({ isOpen, closeModal, title }) => {
             <p><strong>Correo: </strong>{perfil.Login?.email}</p>
           </div>
           <div className="flex justify-end mt-4">
-            <button className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+            <Link href={{
+              pathname: "/formUserEdit",
+              query: { id: perfil.id }
+            }}
+              onClick={closeModal}
+              className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+            >
               Editar Perfil
-            </button>
+            </Link>
           </div>
 
         </div>
