@@ -48,7 +48,6 @@ const ModalMessages = ({ isOpen, closeModal, paciente }) => {
           </button>
         </div>
 
-        {/* Área de mensajes con scroll */}
         <div className="flex-1 overflow-y-auto p-4 bg-gray-50 rounded-md max-h-80 menu-scroll">
           {mensajes.length > 0 ? (
             mensajes.map((msg) => (
@@ -68,7 +67,6 @@ const ModalMessages = ({ isOpen, closeModal, paciente }) => {
           <div ref={mensajesEndRef} />
         </div>
 
-        {/* Input para enviar mensajes */}
         <form onSubmit={enviarMensaje} className="flex items-center mt-4 mb-4 mx-4">
           <input
             type="text"

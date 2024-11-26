@@ -4,6 +4,26 @@ import RecordExamDental from '@/components/RecordExamDental';
 import { useEffect, useState } from 'react';
 
 
+export async function getServerSideProps(context) {
+    const { req } = context;
+    const token = req.cookies.token; // Obtén el token desde las cookies
+
+    if (!token) {
+        // Si no hay token, redirige al login
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false, // Redirección temporal
+            },
+        };
+    }
+
+    // Si el token existe, permite el acceso
+    return {
+        props: {}, // Puedes agregar props adicionales aquí si los necesitas
+    };
+}
+
 const verExamenDental = () => {
 
     const router = useRouter();

@@ -3,6 +3,26 @@ import RecordUser from "@/components/RecordUser";
 import { useEffect, useState } from "react";
 import { useRouter } from 'next/router';
 
+export async function getServerSideProps(context) {
+    const { req } = context;
+    const token = req.cookies.token; // Obtén el token desde las cookies
+
+    if (!token) {
+        // Si no hay token, redirige al login
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false, // Redirección temporal
+            },
+        };
+    }
+
+    // Si el token existe, permite el acceso
+    return {
+        props: {}, // Puedes agregar props adicionales aquí si los necesitas
+    };
+}
+
 const formUserEdit = () => {
     const router = useRouter();
     const { id } = router.query;
@@ -59,7 +79,7 @@ const formUserEdit = () => {
                 console.log(formData);
 
                 // Redirigir al home
-                router.push(`/`);
+                router.push(`/home`);
 
             } else {
                 console.error('Error al enviar el formulario');

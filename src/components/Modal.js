@@ -74,6 +74,7 @@ const Modal = ({ isOpen, closeModal, title }) => {
           <h3 className="text-center text-xl font-bold">Dr. {perfil.Login?.name}</h3>
           <div className="bg-gray-100 p-4 mt-4 rounded-lg shadow-md">
             <h4 className="font-semibold text-lg mb-2">Información</h4>
+            <p><strong>Nombre completo:</strong> {perfil.Login?.name} {perfil.Login?.lastName}</p>
             <p><strong>Cédula Profesional:</strong> {perfil.professionalLicense}</p>
             <p><strong>Teléfono: </strong>{perfil.Login?.phoneNumber}</p>
             <p><strong>Correo: </strong>{perfil.Login?.email}</p>

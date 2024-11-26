@@ -3,6 +3,25 @@ import { useRouter } from 'next/router';
 import RecordExamDental from '@/components/RecordExamDental';
 import { useEffect, useState } from 'react';
 
+export async function getServerSideProps(context) {
+    const { req } = context;
+    const token = req.cookies.token; // Obtén el token desde las cookies
+
+    if (!token) {
+        // Si no hay token, redirige al login
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false, // Redirección temporal
+            },
+        };
+    }
+
+    // Si el token existe, permite el acceso
+    return {
+        props: {}, // Puedes agregar props adicionales aquí si los necesitas
+    };
+}
 
 const examenDentalEdit = () => {
 
@@ -10,6 +29,7 @@ const examenDentalEdit = () => {
     const { id, patId } = router.query;
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [loadingB, setLoadingB] = useState(true);
     const [error, setError] = useState("");
 
     useEffect(() => {
@@ -67,6 +87,8 @@ const examenDentalEdit = () => {
         } catch (error) {
             console.error('Error en la solicitud:', error);
             setError(`Ocurrió un error al enviar la solicitud. ${error}`);
+        } finally {
+            setLoadingB(false);
         }
     };
 
@@ -95,7 +117,7 @@ const examenDentalEdit = () => {
                 </div>
             )}
             
-            <RecordExamDental initialData={data} onSubmit={handleUpdateExam} title={"Editar examen Dental"} validLife={true} viewData={false} />
+            <RecordExamDental initialData={data} onSubmit={handleUpdateExam} title={"Editar examen Dental"} validLife={true} viewData={false} buttonText={"Guardar cambios"} loading={loadingB} />
         </Layout>
     )
 }

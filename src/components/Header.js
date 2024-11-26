@@ -27,6 +27,7 @@ const Header = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [caretDow, setCaretDow] = useState(true);
   const [hasNewNotification, setHasNewNotification] = useState(false);
+  const [perfil, setPerfil] = useState(null);
 
   useEffect(() => {
     // Escuchar el evento de nueva notificación desde el servidor
@@ -40,6 +41,33 @@ const Header = () => {
       socket.off('newNotification');
     };
   }, []);
+
+  useEffect(() => {
+    const fetchPerfilData = async () => {
+      try {
+        const cookies = Cookies.get();
+        const token = cookies.token;
+
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const response = await fetch(`${apiUrl}/api/auth/getDoctor`, {
+          headers: {
+            Authorization: `${token}`,
+          },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setPerfil(data);
+          console.log(data)
+        } else {
+          console.error('Error al obtener el perfil');
+        }
+      } catch (error) {
+        console.error('Error en la solicitud: ', error);
+      }
+
+    };
+    fetchPerfilData();
+  },[!perfil]);
 
   const handleOpenModal = () => {
     setIsOpenNot(true);
@@ -79,7 +107,7 @@ const Header = () => {
             <h2 className="font-semibold relative"
 
             >
-              Nombre dentista
+              {perfil ? <>{perfil.Login?.name} {perfil.Login?.lastName}</> : <p>Cargando...</p>}
               <FontAwesomeIcon icon={caretDow ? faCaretDown : faCaretUp} size="1x" className="cursor-pointer text-white ml-2" onClick={toggleDropdown} />
 
               {/* Menú desplegable */}

@@ -3,12 +3,33 @@ import { useRouter } from 'next/router';
 import RecordForm from '@/components/RecordForm';
 import { useEffect, useState } from 'react';
 
+export async function getServerSideProps(context) {
+    const { req } = context;
+    const token = req.cookies.token; // Obtén el token desde las cookies
+
+    if (!token) {
+        // Si no hay token, redirige al login
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false, // Redirección temporal
+            },
+        };
+    }
+
+    // Si el token existe, permite el acceso
+    return {
+        props: {}, // Puedes agregar props adicionales aquí si los necesitas
+    };
+}
+
 const expedienteEdit = () => {
 
     const router = useRouter();
     const { id, patId } = router.query;
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [loadingB, setLoadingB] = useState(true);
     const [error, setError] = useState("");
 
     useEffect(() => {
@@ -72,6 +93,8 @@ const expedienteEdit = () => {
         } catch (error) {
             console.error('Error en la solicitud:', error);
             setError(`Ocurrió un error al enviar la solicitud. ${error}`);
+        } finally {
+            setLoadingB(false);
         }
     };
 
@@ -98,7 +121,7 @@ const expedienteEdit = () => {
                     </span>
                 </div>
             )}
-            <RecordForm initialData={data} onSubmit={handleUpdateRecord} title={"Editar expediente clinico"} />
+            <RecordForm initialData={data} onSubmit={handleUpdateRecord} title={"Editar expediente clinico"} buttonText={"Guardar cambios"} loading={loadingB}/>
         </Layout>
     )
 }

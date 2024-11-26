@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Cookies from 'js-cookie';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMessage, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faMessage, faXmark, faCalendar } from '@fortawesome/free-solid-svg-icons';
 
 const ModalAgenda = ({ isOpen, closeModal }) => {
 
@@ -109,21 +109,12 @@ const ModalAgenda = ({ isOpen, closeModal }) => {
 
                 {/* Botón para agregar más citas */}
                 <div className="flex justify-center my-4">
-                    <button className="bg-blue-500 text-white rounded-full p-2">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-6 w-6"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M19 11H5m7-7v14"
-                            />
-                        </svg>
+                    <button className="text-lg">
+                        <FontAwesomeIcon
+                            icon={faCalendar}
+                            size="lg"
+                            className={`cursor-pointer text-gray-500 hover:text-blue-500`}
+                        />
                     </button>
                 </div>
             </div>

@@ -3,19 +3,42 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Carousel } from 'react-responsive-carousel';
 import ModalMessages from '@/components/ModalMessages';
+import ModalContact from "@/components/ModalContact";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // Import the CSS for the carousel
 import Image from 'next/image';
 import logo1 from '@@/img/logo3.png';
 import logo2 from '@@/img/logo4.png';
-import logo3 from '@@/img/logo5.png';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMessage } from '@fortawesome/free-solid-svg-icons';
+
+export async function getServerSideProps(context) {
+  const { req } = context;
+  const token = req.cookies.token; // Obtén el token desde las cookies
+
+  if (!token) {
+    // Si no hay token, redirige al login
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false, // Redirección temporal
+      },
+    };
+  }
+
+  // Si el token existe, permite el acceso
+  return {
+    props: {}, // Puedes agregar props adicionales aquí si los necesitas
+  };
+}
+
 
 const Home = () => {
   const router = useRouter();
   const [data, setData] = useState(null); // Estado para almacenar los datos
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isOpenMess, setIsOpenMess] = useState(false);
+  const [isOpenContacts, setIsOpenContacts] = useState(false);
 
   useEffect(() => {
     // Función para hacer la solicitud GET
@@ -39,7 +62,6 @@ const Home = () => {
     fetchData(); // Llama a la función fetchData cuando se monta el componente
 }, []);
 
-  const [isOpenMess, setIsOpenMess] = useState(false);
 
 
   if (error) return <p>Error: {error}</p>;
@@ -112,7 +134,7 @@ const Home = () => {
       {/* Botón de mensaje estático */}
       <button
         className="fixed bottom-20 right-10 bg-blue-500 text-white py-3.5 px-4 rounded-full shadow-lg hover:bg-blue-600"
-        onClick={() => setIsOpenMess(true)}
+        onClick={() => setIsOpenContacts(true)}
       >
         <FontAwesomeIcon
           icon={faMessage}
@@ -122,6 +144,8 @@ const Home = () => {
       </button>
 
       <ModalMessages isOpen={isOpenMess} closeModal={() => setIsOpenMess(false)} />
+        
+      <ModalContact isOpen={isOpenContacts} closeModal={() => setIsOpenContacts(false)}/>
     </Layout>
   );
 };

@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/router';
 
-const RecordForm = ({ initialData = {}, onSubmit, title }) => {
+const RecordForm = ({ initialData = {}, onSubmit, title, buttonText, loading }) => {
 
     const router = useRouter();
     const [formData, setFormData] = useState({
@@ -36,14 +36,14 @@ const RecordForm = ({ initialData = {}, onSubmit, title }) => {
         disease2: '',
         disease3: '',
         disease4: '',
-        colitis: false,
-        gastritis: false,
-        gastroenteritis: false,
-        asma: false,
-        bronquitis: false,
-        neumonia: false,
-        tuberculosis: false,
-        farinoamigdalitis: false,
+        colitis: '',
+        gastritis: '',
+        gastroenteritis: '',
+        asma: '',
+        bronquitis: '',
+        neumonia: '',
+        tuberculosis: '',
+        farinoamigdalitis: '',
         pathological1: '',
         pathological2: '',
         pathological3: '',
@@ -109,13 +109,13 @@ const RecordForm = ({ initialData = {}, onSubmit, title }) => {
                 || (errors.history5.length > 0) || (errors.history6.length > 0)
                 || (errors.history7.length > 0) || (errors.history8.length > 0)
 
-                /* || (errors.weight.trim() === '') || (errors.size.trim() === '')
-                || (errors.tA.trim() === '') || (errors.fC.trim() === '')
-                || (errors.fR.trim() === '') || (errors.t.trim() === '')
-                || (errors.history1.trim() === '') || (errors.history2.trim() === '')
-                || (errors.history3.trim() === '') || (errors.history4.trim() === '')
-                || (errors.history5.trim() === '') || (errors.history6.trim() === '')
-                || (errors.history7.trim() === '') || (errors.history8.trim() === '') */
+                || (formData.weight === '') || (formData.size === '')
+                || (formData.tA === '') || (formData.fC === '')
+                || (formData.fR === '') || (formData.t === '')
+                || (formData.history1.trim() === '') || (formData.history2.trim() === '')
+                || (formData.history3.trim() === '') || (formData.history4.trim() === '')
+                || (formData.history5.trim() === '') || (formData.history6.trim() === '')
+                || (formData.history7.trim() === '') || (formData.history8.trim() === '')
 
             ) {
                 setErrors((prevErrors) => ({
@@ -1066,7 +1066,7 @@ const RecordForm = ({ initialData = {}, onSubmit, title }) => {
                                 type="submit" // Enviar el formulario en el último paso
                                 className="bg-green-500 text-white px-4 py-2 rounded"
                             >
-                                Enviar
+                                {!loading ? 'Cargando...' : buttonText}
                             </button>
                         )}
                     </div>

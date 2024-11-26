@@ -20,7 +20,7 @@ const cuadrantes = {
     85: "Cuadrante 8"
 };
 
-const RecordExamDental = ({ initialData = [], onSubmit, dataPatient = {}, title, validLife, viewData }) => {
+const RecordExamDental = ({ initialData = [], onSubmit, dataPatient = {}, title, validLife, viewData, buttonText, loading }) => {
 
     const router = useRouter();
     const [esAdulto, setEsAdulto] = useState('adult');
@@ -165,7 +165,9 @@ const RecordExamDental = ({ initialData = [], onSubmit, dataPatient = {}, title,
                         </div>
                         {dientes.length > 0 && viewData === false && (
                             <div className="flex justify-center mt-8 mb-4">
-                                <button type="submit" className="bg-blue-500 text-white px-6 py-2 rounded-lg">Guardar</button>
+                                <button type="submit" className="bg-blue-500 text-white px-6 py-2 rounded-lg">
+                                    {!loading ? 'Cargando...' : buttonText}
+                                </button>
                             </div>
                         )}
                     </form>

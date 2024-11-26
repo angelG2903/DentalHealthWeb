@@ -7,6 +7,26 @@ import Link from 'next/link';
 import PrivacyNotice from '@/components/PrivacyNotice';
 import { handleEmailChange, handlePasswordChange } from '@/utils/loginValidations';
 
+export async function getServerSideProps(context) {
+  const { req } = context;
+  const token = req.cookies.token; // Obtén el token desde las cookies
+
+  if (token) {
+    // Si hay token, redirige al home
+    return {
+      redirect: {
+        destination: '/home',
+        permanent: false, // Redirección temporal
+      },
+    };
+  }
+
+  // Si el token existe, permite el acceso
+  return {
+    props: {}, // Puedes agregar props adicionales aquí si los necesitas
+  };
+}
+
 const Login = () => {
   const router = useRouter();
   const [formData, setFormData] = useState({
@@ -60,12 +80,16 @@ const Login = () => {
 
         router.push('/home');  // Redirigir al dashboard
       } else {
-        console.log(JSON.stringify({ formDataToSend }));
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          error: 'Correo o contraseña incorrectos'
+        }));
+        /* console.log(JSON.stringify({ formDataToSend }));
         const errorData = await res.json();
         setErrors((prevErrors) => ({
           ...prevErrors,
           error: errorData.error
-        }));
+        }));  */
 
       }
     } catch (err) {
