@@ -31,6 +31,7 @@ const examenDentalEdit = () => {
     const [loading, setLoading] = useState(true);
     const [loadingB, setLoadingB] = useState(true);
     const [error, setError] = useState("");
+    const [dataUser, setDataUser] = useState(null);
 
     useEffect(() => {
         if (!id) return; // Evita hacer la solicitud si no hay un id
@@ -38,14 +39,19 @@ const examenDentalEdit = () => {
         const fetchData = async () => {
             try {
                 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-                const response = await fetch(`${apiUrl}/api/dentalExam/get/${id}`); // URL de la API
+                const response = await fetch(`${apiUrl}/api/dentalExam/get/${id}`); 
                 if (!response.ok) {
                     throw new Error('Error en la solicitud');
                 }
-
-                const dataForm = await response.json(); // Convierte la respuesta en un objeto JSON
-
+                const dataForm = await response.json(); 
                 setData(dataForm);
+
+                const responseUser = await fetch(`${apiUrl}/api/auth/getPatient/${patId}`); // URL de la API
+                if (!responseUser.ok) {
+                    throw new Error('Error al obtener los datos del Paciente');
+                }
+                const data = await responseUser.json(); // Convierte la respuesta en un objeto JSON
+                setDataUser(data);
 
             } catch (error) {
                 setError(error.message); // Guarda el error en el estado
@@ -117,7 +123,7 @@ const examenDentalEdit = () => {
                 </div>
             )}
             
-            <RecordExamDental initialData={data} onSubmit={handleUpdateExam} title={"Editar examen Dental"} validLife={true} viewData={false} buttonText={"Guardar cambios"} loading={loadingB} />
+            <RecordExamDental initialData={data} dataPatient={dataUser} onSubmit={handleUpdateExam} title={"Editar examen Dental"} validLife={true} viewData={false} buttonText={"Guardar cambios"} loading={loadingB} />
         </Layout>
     )
 }

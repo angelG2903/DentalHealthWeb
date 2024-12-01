@@ -149,12 +149,12 @@ const promotion = () => {
                 <div className="w-3/4">
                     <h1 className="text-2xl font-medium text-center mt-8 mb-8">Promociones</h1>
 
-                    <div className="grid grid-cols-1 md:grid-cols-6 gap-6 ">
+                    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 2xl:grid-cols-9 gap-6 justify-items-center">
                         {data.map((publicacion, index) => (
-                            <div key={index} className="col-span-3 grid grid-cols-12 bg-white shadow-xl rounded-lg overflow-hidden h-52">
+                            <div key={index} className="col-span-3 min-w-60 max-w-lg w-full grid grid-cols-12 bg-white shadow-xl rounded-lg overflow-hidden min-h-52">
                                 {/* Imagen de la promoción */}
 
-                                <div className="col-span-5">
+                                <div className="col-span-12 md:col-span-5">
                                     {publicacion.promotionalImage !== null && (
                                         <Image
                                             src={`${publicacion.promotionalImageUrl}`}
@@ -171,7 +171,7 @@ const promotion = () => {
                                             src={logo1}
                                             alt={"Imagen por default"}
                                             priority={true}
-                                            className="object-cover w-full"
+                                            className="object-cover w-full h-full"
                                         />
                                     )}
 
@@ -179,13 +179,13 @@ const promotion = () => {
                                 </div>
 
                                 {/* Detalles de la promoción */}
-                                <div className="col-span-6 p-4">
+                                <div className="col-span-12 md:col-span-6 p-4">
                                     <h3 className="text-xl font-bold mb-2">{publicacion.title}</h3>
                                     <p className="text-gray-600">{publicacion.description}</p>
                                 </div>
 
 
-                                <div className="col-span-1 grid bg-blue-500">
+                                <div className="col-span-12 md:col-span-1 flex justify-around md:grid bg-blue-500">
                                     <div className="relative group">
                                         <button
                                             onClick={() => openEditModal(publicacion)}

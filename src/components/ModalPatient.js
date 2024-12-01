@@ -47,7 +47,7 @@ const ModalPacientes = ({ isOpen, closeModal, props }) => {
 
     return (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
-            <div className="bg-white rounded-lg w-11/12 md:w-1/2">
+            <div className="bg-white rounded-lg w-10/12 md:w-2/4 2xl:w-1/3">
                 <div className="flex justify-between items-center pb-3 bg-blue-500 text-white p-3 rounded-t-lg">
                     <h3 className="text-xl font-semibold">Pacientes</h3>
                     <button onClick={closeModal} className="text-white">
@@ -81,12 +81,12 @@ const ModalPacientes = ({ isOpen, closeModal, props }) => {
                                         <p>{paciente.Login.name} {paciente.Login.lastName}</p>
                                         <p>Número de telefono: {paciente.Login.phoneNumber}</p>
                                     </div>
-                                    <div className="flex justify-between">
+                                    <div className="flex flex-col sm:flex-row justify-between">
                                         <Link href={{
                                             pathname: "/mostrarExpedientes",
                                             query: { id: paciente.id }
                                         }}
-                                            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                                            className="mb-3 sm:mb-0 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                                         >
                                             Ver expediente
                                         </Link>

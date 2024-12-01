@@ -67,7 +67,7 @@ const Header = () => {
 
     };
     fetchPerfilData();
-  },[!perfil]);
+  }, [!perfil]);
 
   const handleOpenModal = () => {
     setIsOpenNot(true);
@@ -75,7 +75,7 @@ const Header = () => {
   };
 
   // Define rutas donde debería aparecer el NavBar
-  const showNavBar = ['/agenda', '/pacientes', '/notificaciones', '/promocion', '/home', '/mostrarExpedientes', '/mostrarExamenDental', '/examenDental', '/examenDentalEdit', '/expedienteEdit', '/expediente', '/promotion', '/formUserEdit'].includes(router.pathname);
+  const showNavBar = ['/verExpediente', '/agenda', '/pacientes', '/notificaciones', '/promocion', '/home', '/mostrarExpedientes', '/mostrarExamenDental', '/examenDental', '/examenDentalEdit', '/expedienteEdit', '/expediente', '/promotion', '/formUserEdit', '/verExamenDental'].includes(router.pathname);
 
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
@@ -144,7 +144,7 @@ const Header = () => {
           <button
             data-collapse-toggle="navbar-default"
             type="button"
-            className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-white rounded-lg md:hidden hover:bg-blue-400 focus:outline-none focus:ring-2 focus:ring-whit dark:focus:ring-blue-600"
+            className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-white rounded-lg md:hidden hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-whit dark:focus:ring-blue-600"
             aria-controls="navbar-default"
             aria-expanded={isMenuOpen} // Controla si el menú está abierto o cerrado
             onClick={() => setMenuOpen(!isMenuOpen)}
@@ -160,12 +160,13 @@ const Header = () => {
         {showNavBar && (
 
           <div className={`w-full md:block md:w-auto ${isMenuOpen ? '' : 'hidden'}`} id="navbar-default">
-            <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-whit">
+            <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border-2 border-blue-600 bg-gradient-to-r from-blue-600 to-blue-500 md:bg-none rounded-lg md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-whit">
 
               {/* Opciones del menú */}
-              {currentRoute !== '/home' && currentRoute !== '/examenDentalEdit' && currentRoute !== '/examenDental' && currentRoute !== '/expedienteEdit' && currentRoute !== '/expediente' && (
+              {currentRoute !== '/home' && (
                 <li>
-                  <Link href="/home" className="hover:bg-blue-500 rounded-md p-1 text-white inline-block">
+                  <Link href="/home" className="hover:bg-blue-500 rounded-md p-1 text-white block md:hidden text-center">Home</Link>
+                  <Link href="/home" className="hover:bg-blue-500 rounded-md p-1 text-white hidden md:inline-block ">
                     <FontAwesomeIcon
                       icon={faHome}
                       size="lg"
@@ -174,22 +175,47 @@ const Header = () => {
                   </Link>
                 </li>
               )}
-              <li>
-                <button onClick={() => setIsOpenAge(true)} className="hover:bg-blue-500 rounded-md p-1 text-white" aria-current="page">Agenda</button>
-              </li>
-              {currentRoute !== '/mostrarExpedientes' && currentRoute !== '/mostrarExamenDental' && currentRoute !== '/examenDental' && currentRoute !== '/examenDentalEdit' && currentRoute !== '/expedienteEdit' && currentRoute !== '/expediente' && currentRoute !== '/promotion' && (
+              {currentRoute !== '/promotion' && currentRoute !== '/mostrarExpedientes' && currentRoute !== '/expediente' && currentRoute !== '/expedienteEdit' && currentRoute !== '/mostrarExamenDental' && currentRoute !== '/examenDental' && currentRoute !== '/examenDentalEdit' && currentRoute !== '/verExamenDental' && (
                 <li>
-                  <button onClick={() => setIsOpen(true)} className="hover:bg-blue-500 rounded-md p-1 text-white">Pacientes</button>
+                  <button
+                    onClick={() => {
+                      setIsOpenAge(true);
+                      setMenuOpen(!isMenuOpen);
+                    }}
+                    className="hover:bg-blue-500 rounded-md p-1 text-white w-full" aria-current="page"
+                  >
+                    Agenda
+                  </button>
                 </li>
               )}
-              {currentRoute !== '/promotion' && (
+              {currentRoute !== '/mostrarExpedientes' && currentRoute !== '/mostrarExamenDental' && currentRoute !== '/examenDental' && currentRoute !== '/examenDentalEdit' && currentRoute !== '/expedienteEdit' && currentRoute !== '/expediente' && currentRoute !== '/promotion' && currentRoute !== '/verExamenDental' && (
                 <li>
-                  <Link href="/promotion" className="hover:bg-blue-500 rounded-md p-1 text-white flex">Promociónes</Link>
+                  <button
+                    onClick={() => {
+                      setIsOpen(true);
+                      setMenuOpen(!isMenuOpen);
+                    }}
+                    className="hover:bg-blue-500 rounded-md p-1 text-white w-full"
+                  >
+                    Pacientes
+                  </button>
+                </li>
+              )}
+              {currentRoute !== '/promotion' && currentRoute !== '/mostrarExpedientes' && currentRoute !== '/expediente' && currentRoute !== '/expedienteEdit' && currentRoute !== '/mostrarExamenDental' && currentRoute !== '/examenDental' && currentRoute !== '/examenDentalEdit' && currentRoute !== '/verExamenDental' && (
+                <li>
+                  <Link href="/promotion" className="hover:bg-blue-500 rounded-md p-1 text-white block text-center">Promociónes</Link>
                 </li>
               )}
               <li>
-                <button onClick={handleOpenModal} className="hover:bg-blue-500 rounded-md p-1 text-white sm:block md:hidden">Notificaciones</button>
-                <div className="relative cursor-pointer hover:bg-blue-500 rounded-md p-1 sm:hidden md:block" onClick={handleOpenModal}>
+                <button onClick={() => {
+                  handleOpenModal();
+                  setMenuOpen(!isMenuOpen);
+                }}
+                  className="hover:bg-blue-500 rounded-md p-1 text-white block md:hidden w-full"
+                >
+                  Notificaciones
+                </button>
+                <div className="relative cursor-pointer hover:bg-blue-500 rounded-md p-1 hidden md:block" onClick={handleOpenModal}>
                   {/* Icono de campana con animación */}
                   <FontAwesomeIcon
                     icon={faBell}

@@ -62,7 +62,7 @@ const ModalAgenda = ({ isOpen, closeModal }) => {
 
     return (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
-            <div className="bg-white rounded-lg w-11/12 md:w-1/3">
+            <div className="bg-white rounded-lg w-10/12 md:w-2/4 lg:w-2/5 2xl:w-1/4">
                 {/* Encabezado del modal */}
                 <div className="flex justify-between items-center pb-3 border-b bg-blue-500 text-white p-3 rounded-t-lg">
                     <h3 className="text-xl font-semibold">Agenda</h3>

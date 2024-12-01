@@ -1,6 +1,6 @@
 import Layout from '@/components/Layout';
 import { useRouter } from 'next/router';
-import RecordForm from '@/components/RecordForm';
+import ViewRecordForm from '@/components/ViewRecordForm';
 import { useEffect, useState } from 'react';
 
 export async function getServerSideProps(context) {
@@ -23,13 +23,11 @@ export async function getServerSideProps(context) {
     };
 }
 
-const expedienteEdit = () => {
-
+const verExpediente = () => {
     const router = useRouter();
     const { id, patId } = router.query;
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [loadingB, setLoadingB] = useState(true);
     const [error, setError] = useState("");
     const [dataUser, setDataUser] = useState(null);
 
@@ -76,38 +74,6 @@ const expedienteEdit = () => {
         fetchData(); // Llama a la función fetchData cuando se monta el componente
     }, [id]);
 
-
-
-    const handleUpdateRecord = async (formData) => {
-        try {
-            // Enviar el formulario al servidor
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-            const response = await fetch(`${apiUrl}/api/medicalForm/update/${id}`, {
-                method: 'PUT',
-                body: formData, 
-            });
-
-            if (response.ok) {
-                console.log('Formulario actualizado con éxito');
-                console.log(formData);
-
-                // Redirigir al login
-                router.push(`/mostrarExpedientes?id=${patId}`);
-
-            } else {
-                console.error('Error al enviar el formulario');
-                
-                setError('Error al enviar el formulario. Inténtalo de nuevo.',);
-            }
-        } catch (error) {
-            console.error('Error en la solicitud:', error);
-            setError(`Ocurrió un error al enviar la solicitud. ${error}`);
-        } finally {
-            setLoadingB(false);
-        }
-    };
-
-
     if (loading) {
         return (
             <div className="flex justify-center items-center h-56">
@@ -130,9 +96,9 @@ const expedienteEdit = () => {
                     </span>
                 </div>
             )}
-            <RecordForm initialData={data} dataPatient={dataUser} onSubmit={handleUpdateRecord} title={"Editar expediente clinico"} buttonText={"Guardar cambios"} loading={loadingB}/>
+            <ViewRecordForm initialData={data} dataPatient={dataUser} title={"Expediente clinico"} buttonText={"Salir"} />
         </Layout>
     )
 }
 
-export default expedienteEdit;
+export default verExpediente;

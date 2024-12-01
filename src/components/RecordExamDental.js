@@ -58,10 +58,13 @@ const RecordExamDental = ({ initialData = [], onSubmit, dataPatient = {}, title,
             });
         }
 
-        if (Object.keys(dataPatient).length > 0) {
+    }, []);
+
+    useEffect(() => {
+        if (dataPatient) {
             setDataP(dataPatient)
         }
-    }, []);
+    }, [dataPatient])
 
 
     const handleSubmit = async (e) => {
@@ -86,17 +89,12 @@ const RecordExamDental = ({ initialData = [], onSubmit, dataPatient = {}, title,
                         />
                     </button>
                 </div>
-                {title ? (
-                    <h1 className="text-center text-xl font-bold mb-8 col-span-4">{title}</h1>
-                ) : dataP && Object.keys(dataP).length > 0 ? (
+                {dataP && Object.keys(dataP).length > 0 ? (
                     <div className="mb-8 col-span-4">
-                        <h1 className="text-xl font-bold text-center mb-5">
-                            Paciente: {dataP.Login.name} {dataP.Login.lastName}{console.log(dataP)}
+                        <h1 className="text-center text-xl font-bold mb-4 col-span-4">{title}</h1>
+                        <h1 className="text-xl font-medium text-center mb-2">
+                            Paciente: {dataP.Login.name} {dataP.Login.lastName}
                         </h1>
-                        <div className="text-center mb-8">
-                            <p className="text-lg font-medium">Teléfono: {dataP.Login.phoneNumber}</p>
-                            <p className="text-lg font-medium">Correo electrónico: {dataP.Login.email}</p>
-                        </div>
 
                     </div>
 

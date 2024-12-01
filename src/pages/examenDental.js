@@ -1,5 +1,5 @@
 // pages/odontograma.js
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Layout from '@/components/Layout';
 import { useRouter } from "next/router";
 import RecordExamDental from '@/components/RecordExamDental';
@@ -29,6 +29,28 @@ const examenDental = () => {
     const { id } = router.query;
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(true);
+    const [data, setData] = useState(null);
+
+    useEffect(() => {
+        if (!id) return; // Evita hacer la solicitud si no hay un id
+        // Función para hacer la solicitud GET
+        const fetchData = async () => {
+            try {
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+                const response = await fetch(`${apiUrl}/api/auth/getPatient/${id}`); // URL de la API
+                if (!response.ok) {
+                    throw new Error('Error al obtener los datos del Paciente');
+                }
+                const data = await response.json(); // Convierte la respuesta en un objeto JSON
+                setData(data);
+
+            } catch (error) {
+                setError(error.message); // Guarda el error en el estado
+            } 
+        };
+
+        fetchData();
+    }, [id]);
 
     const handleSubmit = async (dientes) => {
 
@@ -74,7 +96,7 @@ const examenDental = () => {
                     </span>
                 </div>
             )}
-            <RecordExamDental onSubmit={handleSubmit} title={"Crear examen Dental"} viewData={false} buttonText={"Guardar"} loading={loading} />
+            <RecordExamDental onSubmit={handleSubmit} title={"Crear examen Dental"} viewData={false} buttonText={"Guardar"} loading={loading} dataPatient={data} />
         </Layout>
 
     );

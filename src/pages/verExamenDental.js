@@ -68,38 +68,6 @@ const verExamenDental = () => {
 
     }, [id]);
 
-    const handleUpdateExam = async (dientes) => {
-        try {
-            // Enviar el formulario al servidor
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-            const response = await fetch(`${apiUrl}/api/dentalExam/update/${id}`, {
-                method: 'PUT',
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ dientes }),
-            });
-
-            if (response.ok) {
-                console.log('Formulario actualizado con éxito');
-                console.log(dientes);
-
-                // Redirigir al login
-                router.push(`/mostrarExamenDental?id=${patId}`);
-
-            } else {
-                console.error('Error al enviar el formulario');
-                const result = await response.json();
-                console.log("Error:", result);
-                setError('Error al enviar el formulario. Inténtalo de nuevo.',);
-            }
-        } catch (error) {
-            console.error('Error en la solicitud:', error);
-            setError(`Ocurrió un error al enviar la solicitud. ${error}`);
-        }
-    };
-
-
     if (loading) {
         return (
             <div className="flex justify-center items-center h-56">
@@ -124,7 +92,7 @@ const verExamenDental = () => {
                 </div>
             )}
             
-            <RecordExamDental initialData={data} dataPatient={dataUser} onSubmit={handleUpdateExam} validLife={true} viewData={true} />
+            <RecordExamDental initialData={data} dataPatient={dataUser} validLife={true} viewData={true} />
         </Layout>
     )
 }

@@ -76,7 +76,7 @@ const ModalContact = ({ isOpen, closeModal }) => {
     if (!isOpen) return null;
     return (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
-            <div className="bg-white rounded-lg md:w-1/2 lg:w-1/4">
+            <div className="bg-white rounded-lg w-10/12 sm:w-2/3 md:w-1/2 xl:w-1/4">
                 {/* Encabezado del modal */}
                 <div className="flex justify-between items-center pb-3 bg-blue-500 text-white rounded-t-lg p-3">
                     <h3 className="text-xl font-semibold">

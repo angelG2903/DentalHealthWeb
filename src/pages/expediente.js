@@ -1,7 +1,7 @@
 import Layout from '@/components/Layout';
 import { useRouter } from 'next/router';
 import RecordForm from '@/components/RecordForm';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export async function getServerSideProps(context) {
     const { req } = context;
@@ -28,6 +28,27 @@ const expediente = () => {
     const { id } = router.query;
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(true);
+    const [data, setData] = useState(null);
+
+    useEffect(() => {
+        if (!id) return; 
+        const fetchData = async () => {
+            try {
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+                const response = await fetch(`${apiUrl}/api/auth/getPatient/${id}`);
+                if (!response.ok) {
+                    throw new Error('Error al obtener los datos del Paciente');
+                }
+                const data = await response.json();
+                setData(data);
+
+            } catch (error) {
+                setError(error.message);
+            } 
+        };
+
+        fetchData();
+    }, [id]);
 
     // Manejar el envío del formulario
     const handleSubmit = async (formData) => {
@@ -73,7 +94,7 @@ const expediente = () => {
                     </span>
                 </div>
             )}
-            <RecordForm onSubmit={handleSubmit} title={"Crear expediente clinico"} buttonText={"Guardar"} loading={loading}/>
+            <RecordForm onSubmit={handleSubmit} title={"Crear expediente clinico"} buttonText={"Guardar"} loading={loading} dataPatient={data}/>
         </Layout>
     )
 }

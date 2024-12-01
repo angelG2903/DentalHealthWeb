@@ -30,17 +30,9 @@ const Notification = ({ isOpen, closeModal }) => {
   if (!isOpen || !notifications) return null;
 
 
-  const notificaciones = [
-    { nombrePaciente: 'Juan Pérez', fecha: '26/05/2024', hora: '10:00' },
-    { nombrePaciente: 'Ana Gómez', fecha: '27/05/2024', hora: '11:00' },
-    { nombrePaciente: 'Luis López', fecha: '28/05/2024', hora: '09:00' },
-    // Agrega más notificaciones para probar el scroll
-  ];
-
-
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white rounded-lg w-11/12 md:w-1/2">
+      <div className="bg-white rounded-lg w-10/12 md:w-2/4 lg:w-2/5 2xl:w-1/4">
         {/* Encabezado del modal */}
         <div className="flex justify-between items-center pb-3 border-b bg-blue-500 text-white p-3 rounded-t-lg">
           <h3 className="text-xl font-semibold">Notificaciones</h3>
@@ -68,7 +60,7 @@ const Notification = ({ isOpen, closeModal }) => {
                 </p>
 
                 {/* Botones de acción */}
-                <div className="flex justify-end mt-4 space-x-2">
+                <div className="flex flex-col sm:flex-row justify-end mt-4 space-y-2 sm:space-y-0 space-x-0 sm:space-x-2">
                   <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
                     Confirmar cita
                   </button>

@@ -3,6 +3,8 @@ import Layout from "@/components/Layout";
 import MostrarListEx from "@/components/MostrarListEx";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus, faFileMedical } from '@fortawesome/free-solid-svg-icons';
 
 export async function getServerSideProps(context) {
     const { req } = context;
@@ -95,27 +97,34 @@ const mostrarExamenDental = () => {
                         deleteType={false}
                         message={"No hay examenes dentales"}
                     />
+
+                    <Link href={{
+                        pathname: "/mostrarExpedientes",
+                        query: { id: id }
+                    }}
+                        className="group fixed bottom-32 right-9 bg-blue-500 text-white py-2 px-3 rounded-full shadow-lg hover:bg-blue-600 transform transition-transform duration-200 scale-100 hover:scale-105"
+                    >
+                        <FontAwesomeIcon
+                            icon={faFileMedical}
+                            size="2x"
+                            className={``}
+                        />
+                        <div className="absolute bottom-full -right-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block bg-gray-800 text-white text-xs rounded-lg px-2 py-1 whitespace-nowrap">
+                            Ver expediente
+                        </div>
+                    </Link>
                     <Link href={{
                         pathname: "/examenDental",
                         query: { id: id }
                     }}
-                        className="group fixed bottom-16 right-6 bg-blue-500 text-white p-3 rounded-full shadow-lg hover:bg-blue-600 transform transition-transform duration-200 scale-100 hover:scale-105"
+                        className="group fixed bottom-16 right-8 bg-blue-500 text-white py-2 px-3 rounded-full shadow-lg hover:bg-blue-600 transform transition-transform duration-200 scale-100 hover:scale-105"
                     >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-6 w-6"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M19 11H5m7-7v14"
-                            />
-                        </svg>
-                        <div className="absolute bottom-full -right-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block bg-gray-800 text-white text-xs rounded-lg px-2 py-1 whitespace-nowrap">
+                        <FontAwesomeIcon
+                            icon={faPlus}
+                            size="2x"
+                            className={``}
+                        />
+                        <div className="absolute bottom-full -right-1/2 transform -translate-x-3/4 mb-2 hidden group-hover:block bg-gray-800 text-white text-xs rounded-lg px-2 py-1 whitespace-nowrap">
                             Crear examen dental
                         </div>
                     </Link>

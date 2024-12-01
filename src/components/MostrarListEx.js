@@ -61,10 +61,10 @@ const MostrarListEx = ({ content, data, setData, deleteType, message }) => {
 
     return (
         <>
-            <div className="grid grid-cols-1 md:grid-cols-9 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-6 xl:grid-cols-9 2xl:grid-cols-12 gap-6 justify-items-center">
                 {data && data.length > 0 ? (
                     data.map((expediente, index) => (
-                        <div key={index} className="col-span-3 bg-white shadow-lg rounded-lg overflow-hidden">
+                        <div key={index} className="col-span-3 bg-white shadow-lg rounded-lg overflow-hidden min-w-60 max-w-80 w-full">
 
                             <div className="grid grid-cols-3">
                                 <div className="col-span-3 p-4">
@@ -77,7 +77,7 @@ const MostrarListEx = ({ content, data, setData, deleteType, message }) => {
                                 <div className="col-span-3 grid grid-cols-3 bg-blue-500">
                                     <div className="relative group">
                                         <Link href={{
-                                            pathname: `${deleteType ? "/expedienteEdit" : "/verExamenDental"}`,
+                                            pathname: `${deleteType ? "/verExpediente" : "/verExamenDental"}`,
                                             query: {
                                                 id: expediente.id,
                                                 patId: expediente.Patient.id

@@ -8,9 +8,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/router';
 
-const RecordForm = ({ initialData = {}, onSubmit, title, buttonText, loading }) => {
+const RecordForm = ({ initialData = {}, dataPatient = {}, onSubmit, title, buttonText, loading }) => {
 
     const router = useRouter();
+    const [dataP, setDataP] = useState({});
     const [formData, setFormData] = useState({
         weight: '',
         size: '',
@@ -148,6 +149,12 @@ const RecordForm = ({ initialData = {}, onSubmit, title, buttonText, loading }) 
     useEffect(() => {
         setFormData((prevData) => ({ ...prevData, ...initialData }));
     }, []);
+
+    useEffect(() => {
+        if (dataPatient) {
+            setDataP(dataPatient)
+        }
+    }, [dataPatient])
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -298,7 +305,21 @@ const RecordForm = ({ initialData = {}, onSubmit, title, buttonText, loading }) 
                         size="lg"
                     />
                 </button>
-                <h2 className="text-2xl font-semibold mb-4 text-center">{title}</h2>
+
+                {dataP && Object.keys(dataP).length > 0 ? (
+                    <div className="mb-8 col-span-4">
+                        <h2 className="text-2xl font-semibold mb-4 text-center">{title}</h2>
+                        <h1 className="text-xl font-medium text-center mb-2">
+                            Paciente: {dataP.Login.name} {dataP.Login.lastName}
+                        </h1>
+
+                    </div>
+
+                ) : (
+                    <p className="text-center col-span-4 text-gray-500">
+                        No hay datos del paciente disponibles.
+                    </p>
+                )}
 
                 {/* Stepper */}
                 <div className="flex justify-center items-center mb-6">
