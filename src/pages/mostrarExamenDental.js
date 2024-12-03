@@ -6,24 +6,40 @@ import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faFileMedical } from '@fortawesome/free-solid-svg-icons';
 
+import jwt from 'jsonwebtoken';
+
 export async function getServerSideProps(context) {
-    const { req } = context;
-    const token = req.cookies.token; // Obtén el token desde las cookies
+  const { req, res } = context;
+  const token = req.cookies.token; // Obtén el token desde las cookies
 
-    if (!token) {
-        // Si no hay token, redirige al login
-        return {
-            redirect: {
-                destination: '/',
-                permanent: false, // Redirección temporal
-            },
-        };
-    }
-
-    // Si el token existe, permite el acceso
+  if (!token) {
+    // Si no hay token, redirige al login
     return {
-        props: {}, // Puedes agregar props adicionales aquí si los necesitas
+      redirect: {
+        destination: '/',
+        permanent: false, // Redirección temporal
+      },
     };
+  }
+
+  try {
+    // Decodifica el token para verificar su validez
+    const decoded = jwt.verify(token, process.env.JWT_SECRET); // Asegúrate de tener una clave secreta configurada
+
+    // Si el token es válido, permite el acceso
+    return {
+      props: {},
+    };
+  } catch (error) {
+    // Si el token es inválido o ha caducado, redirige al login
+    res.setHeader('Set-Cookie', 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly;');
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
 }
 
 const mostrarExamenDental = () => {

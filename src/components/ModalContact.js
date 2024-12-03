@@ -1,27 +1,107 @@
 import React, { useState, useEffect, useRef } from 'react';
+import Cookies from 'js-cookie';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMessage } from '@fortawesome/free-solid-svg-icons';
+import io from 'socket.io-client';
+
+const socket = io('http://192.168.100.23:5000', {
+    transports: ['websocket']
+});
 
 const ModalContact = ({ isOpen, closeModal }) => {
 
-    const [mensaje, setMensaje] = useState('');
-    const [mensajes, setMensajes] = useState([
-        { id: 1, texto: 'Hola, ¿cómo estás?', enviadoPor: 'doctor' },
-        { id: 2, texto: 'Estoy bien, gracias.', enviadoPor: 'paciente' },
-        { id: 3, texto: 'Perfecto, nos vemos en tu próxima cita.', enviadoPor: 'doctor' },
-        // Puedes agregar más mensajes para probar
-    ]);
+    const [perfil, setPerfil] = useState(null);
 
-    // Referencia al contenedor de mensajes
+    const [mensaje, setMensaje] = useState('');
+    const [mensajes, setMensajes] = useState([]);
     const mensajesEndRef = useRef(null);
+
+    const [searchTerm, setSearchTerm] = useState('');
+    const [data, setData] = useState(null);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [selectedPatient, setSelectedPatient] = useState(null);
+
+    useEffect(() => {
+        if (selectedPatient) {
+            fetchMessages(selectedPatient.id);
+        }
+    }, [selectedPatient]);
+
+    const fetchMessages = async (patientId) => {
+        try {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+            const response = await fetch(`${apiUrl}/api/message/messages/${perfil.id}/${patientId}`);
+            const data = await response.json();
+            setMensajes(data);
+            console.log(data)
+        } catch (error) {
+            console.error('Error al cargar mensajes:', error);
+            console.log(mensajes)
+        }
+    };
+
+    const fetchPerfilData = async () => {
+        try {
+            const cookies = Cookies.get();
+            const token = cookies.token;
+
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+            const response = await fetch(`${apiUrl}/api/auth/getDoctor`, {
+                headers: {
+                    Authorization: `${token}`,
+                },
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setPerfil(data);
+                console.log(data);
+
+                socket.emit('register', data.id);
+
+                // Escuchar mensajes privados
+                socket.on('receive_private_message', (data) => {
+                    setMensajes((prevMensajes) => [
+                        ...prevMensajes,
+                        { 
+                            id: prevMensajes.length + 1, 
+                            message: data.message, 
+                            senderId: data.fromUserId,
+                            receiverId: data.toUserId,
+                        },
+                    ]);
+                });
+
+                return () => {
+                    socket.off('receive_private_message');
+                };
+
+            } else {
+                console.error('Error al obtener el perfil');
+            }
+        } catch (error) {
+            console.error('Error en la solicitud: ', error);
+        }
+
+    };
+
 
     // Función para manejar el envío de mensajes
     const enviarMensaje = (e) => {
         e.preventDefault();
-        if (mensaje.trim()) {
-            const nuevoMensaje = { id: mensajes.length + 1, texto: mensaje, enviadoPor: 'doctor' };
+        if (mensaje.trim() === "") return;
+        if (mensaje.trim() && selectedPatient) {
+            const nuevoMensaje = { id: mensajes.length + 1, message: mensaje, senderId: perfil.id };
             setMensajes([...mensajes, nuevoMensaje]);
-            setMensaje(''); // Limpiar el campo de texto
+
+            // Enviar mensaje al backend
+            socket.emit("send_private_message", {
+                fromUserId: perfil.id, // Cambia esto por el ID del doctor
+                toUserId: selectedPatient.id, // ID del paciente seleccionado
+                message: mensaje,
+            });
+
+            setMensaje(""); // Limpiar el campo de texto
         }
     };
 
@@ -39,15 +119,10 @@ const ModalContact = ({ isOpen, closeModal }) => {
     }, [isOpen]);
 
 
-    const [searchTerm, setSearchTerm] = useState('');
-    const [data, setData] = useState(null);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [selectedPatient, setSelectedPatient] = useState(null);
-
     useEffect(() => {
         if (isOpen) {
             fetchData();
+            fetchPerfilData();
         }
     }, [!isOpen]);
 
@@ -152,12 +227,12 @@ const ModalContact = ({ isOpen, closeModal }) => {
                                 mensajes.map((msg) => (
                                     <div
                                         key={msg.id}
-                                        className={`p-2 my-2 rounded-md ${msg.enviadoPor === "doctor"
-                                                ? "bg-blue-100 text-right"
-                                                : "bg-gray-100 text-left"
+                                        className={`p-2 my-2 rounded-md ${msg.senderId === perfil.id
+                                            ? "bg-blue-100 text-right"
+                                            : "bg-gray-100 text-left"
                                             }`}
                                     >
-                                        <p>{msg.texto}</p>
+                                        <p>{msg.message}</p>
                                     </div>
                                 ))
                             ) : (

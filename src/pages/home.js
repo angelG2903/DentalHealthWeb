@@ -11,8 +11,10 @@ import logo2 from '@@/img/logo4.png';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMessage } from '@fortawesome/free-solid-svg-icons';
 
+import jwt from 'jsonwebtoken';
+
 export async function getServerSideProps(context) {
-  const { req } = context;
+  const { req, res } = context;
   const token = req.cookies.token; // Obtén el token desde las cookies
 
   if (!token) {
@@ -25,12 +27,25 @@ export async function getServerSideProps(context) {
     };
   }
 
-  // Si el token existe, permite el acceso
-  return {
-    props: {}, // Puedes agregar props adicionales aquí si los necesitas
-  };
-}
+  try {
+    // Decodifica el token para verificar su validez
+    const decoded = jwt.verify(token, process.env.JWT_SECRET); // Asegúrate de tener una clave secreta configurada
 
+    // Si el token es válido, permite el acceso
+    return {
+      props: {},
+    };
+  } catch (error) {
+    // Si el token es inválido o ha caducado, redirige al login
+    res.setHeader('Set-Cookie', 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly;');
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
+}
 
 const Home = () => {
   const router = useRouter();
