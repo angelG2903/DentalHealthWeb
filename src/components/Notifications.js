@@ -1,9 +1,17 @@
 import { useEffect, useState } from "react";
-
+import ConfirmationModal from '@/components/ConfirmationModal';
+import MessageNotification from '@/components/MessageNotification';
 
 const Notification = ({ isOpen, closeModal }) => {
 
   const [notifications, setNotifications] = useState(null);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [confirmAppont, setConfirmAppont] = useState(null);
+
+  const [isConfirmModalOpenCancel, setIsConfirmModalOpenCancel] = useState(false);
+  const [cancelAppont, setCancelAppont] = useState(null);
+
+  const [notification, setNotification] = useState({ message: "", type: "" });
 
   useEffect(() => {
     if (isOpen) {
@@ -26,6 +34,74 @@ const Notification = ({ isOpen, closeModal }) => {
       console.error('Error en la solicitud: ', error);
     }
   }
+
+  function formatTimeTo12Hour(time) {
+    // Crea un objeto Date usando la hora en formato `HH:mm:ss`
+    const [hours, minutes, seconds] = time.split(':');
+    const date = new Date();
+    date.setHours(parseInt(hours), parseInt(minutes), parseInt(seconds));
+
+    // Usa toLocaleTimeString para formatear en 12 horas
+    return date.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+  }
+
+  const confirmAppointment = async () => {
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const response = await fetch(`${apiUrl}/api/appointment/confirm/${confirmAppont}`, {
+        method: 'PUT',
+      });
+
+      if (response.ok) {
+        setNotification({ message: "Cita confirmada", type: "success" });
+        fetchNotificationsData();
+      } else {
+        setNotification({ message: "Error al confirmar la cita", type: "error" });
+      }
+    } catch (error) {
+      console.error('Error en la solicitud de confirmación: ', error);
+      setNotification({ message: "Hubo un error en la solicitud de confirmación", type: "error" });
+    } finally {
+      setIsConfirmModalOpen(false);
+      setConfirmAppont(null);
+    }
+  };
+
+  const confirm = (id) => {
+    setConfirmAppont(id);
+    setIsConfirmModalOpen(true);
+  };
+
+  const cancelAppointment = async () => {
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const response = await fetch(`${apiUrl}/api/appointment/cancel/${cancelAppont}`, {
+        method: 'PUT',
+      });
+
+      if (response.ok) {
+        setNotification({ message: "La Cita ha sido cancelada", type: "error" });
+        fetchNotificationsData();
+      } else {
+        setNotification({ message: "Error al cancelar la cita", type: "error" });
+      }
+    } catch (error) {
+      console.error('Error en la solicitud de cancelación: ', error);
+      setNotification({ message: "Hubo un error en la solicitud de cancelación", type: "error" });
+    } finally {
+      setIsConfirmModalOpenCancel(false);
+      setCancelAppont(null);
+    }
+  };
+
+  const cancel = (id) => {
+    setCancelAppont(id);
+    setIsConfirmModalOpenCancel(true);
+  };
 
   if (!isOpen || !notifications) return null;
 
@@ -56,15 +132,21 @@ const Notification = ({ isOpen, closeModal }) => {
                   Solicitó una cita para el día{' '}
                   <span className="font-bold">{notification.Appointment.date}</span>{' '}
                   en un horario de{' '}
-                  <span className="font-bold">{notification.Appointment.time}</span>.
+                  <span className="font-bold">{formatTimeTo12Hour(notification.Appointment.time)}</span>
                 </p>
 
                 {/* Botones de acción */}
                 <div className="flex flex-col sm:flex-row justify-end mt-4 space-y-2 sm:space-y-0 space-x-0 sm:space-x-2">
-                  <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                  <button
+                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                    onClick={() => confirm(notification.appointmentId)}
+                  >
                     Confirmar cita
                   </button>
-                  <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+                  <button
+                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                    onClick={() => cancel(notification.appointmentId)}
+                  >
                     Cancelar
                   </button>
                 </div>
@@ -74,6 +156,35 @@ const Notification = ({ isOpen, closeModal }) => {
             <p className="text-gray-500 text-center mb-4">No hay notificaciones pendientes.</p>
           )}
         </div>
+
+        <ConfirmationModal
+          isOpen={isConfirmModalOpen}
+          onConfirm={confirmAppointment}
+          title={"¿Confirmar cita?"}
+          message={"¿Estás seguro de que deseas confirmar esta cita? Esta acción no se puede deshacer."}
+          onCancel={() => setIsConfirmModalOpen(false)}
+          buttonText={"Confirmar"}
+          styles={"hover:bg-blue-600 bg-blue-500"}
+        />
+
+        <ConfirmationModal
+          isOpen={isConfirmModalOpenCancel}
+          onConfirm={cancelAppointment}
+          title={"¿Cancelar cita?"}
+          message={"¿Estás seguro de que deseas cancelar esta cita? Esta acción no se puede deshacer."}
+          onCancel={() => setIsConfirmModalOpenCancel(false)}
+          buttonText={"Si"}
+          buttonTextC={"No"}
+        />
+
+        {notification.message && (
+          <MessageNotification
+            message={notification.message}
+            type={notification.type}
+            onClose={() => setNotification({ message: "", type: "" })}
+          />
+        )}
+
       </div>
     </div>
   );

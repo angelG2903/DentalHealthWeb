@@ -2,41 +2,42 @@ import Layout from '@/components/Layout';
 import { useRouter } from 'next/router';
 import RecordForm from '@/components/RecordForm';
 import { useEffect, useState } from 'react';
+import MessageNotification from '@/components/MessageNotification';
 
 import jwt from 'jsonwebtoken';
 
 export async function getServerSideProps(context) {
-  const { req, res } = context;
-  const token = req.cookies.token; // Obtén el token desde las cookies
+    const { req, res } = context;
+    const token = req.cookies.token; // Obtén el token desde las cookies
 
-  if (!token) {
-    // Si no hay token, redirige al login
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false, // Redirección temporal
-      },
-    };
-  }
+    if (!token) {
+        // Si no hay token, redirige al login
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false, // Redirección temporal
+            },
+        };
+    }
 
-  try {
-    // Decodifica el token para verificar su validez
-    const decoded = jwt.verify(token, process.env.JWT_SECRET); // Asegúrate de tener una clave secreta configurada
+    try {
+        // Decodifica el token para verificar su validez
+        const decoded = jwt.verify(token, process.env.JWT_SECRET); // Asegúrate de tener una clave secreta configurada
 
-    // Si el token es válido, permite el acceso
-    return {
-      props: {},
-    };
-  } catch (error) {
-    // Si el token es inválido o ha caducado, redirige al login
-    res.setHeader('Set-Cookie', 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly;');
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    };
-  }
+        // Si el token es válido, permite el acceso
+        return {
+            props: {},
+        };
+    } catch (error) {
+        // Si el token es inválido o ha caducado, redirige al login
+        res.setHeader('Set-Cookie', 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly;');
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false,
+            },
+        };
+    }
 }
 
 const expedienteEdit = () => {
@@ -48,6 +49,8 @@ const expedienteEdit = () => {
     const [loadingB, setLoadingB] = useState(true);
     const [error, setError] = useState("");
     const [dataUser, setDataUser] = useState(null);
+
+    const [notification, setNotification] = useState({ message: "", type: "" });
 
     useEffect(() => {
         if (!id) return;
@@ -100,24 +103,24 @@ const expedienteEdit = () => {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
             const response = await fetch(`${apiUrl}/api/medicalForm/update/${id}`, {
                 method: 'PUT',
-                body: formData, 
+                body: formData,
             });
 
             if (response.ok) {
-                console.log('Formulario actualizado con éxito');
-                console.log(formData);
-
-                // Redirigir al login
-                router.push(`/mostrarExpedientes?id=${patId}`);
+                setNotification({ message: "Formulario actualizado con éxito", type: "success" });
+                setTimeout(() => {
+                    router.push(`/mostrarExpedientes?id=${patId}`);
+                }, 2000);
 
             } else {
                 console.error('Error al enviar el formulario');
-                
+                setNotification({ message: "Error al enviar el formulario. Inténtalo de nuevo.", type: "error" });
                 setError('Error al enviar el formulario. Inténtalo de nuevo.',);
             }
         } catch (error) {
             console.error('Error en la solicitud:', error);
             setError(`Ocurrió un error al enviar la solicitud. ${error}`);
+            setNotification({ message: "Ocurrió un error al enviar la solicitud.", type: "error" });
         } finally {
             setLoadingB(false);
         }
@@ -146,7 +149,15 @@ const expedienteEdit = () => {
                     </span>
                 </div>
             )}
-            <RecordForm initialData={data} dataPatient={dataUser} onSubmit={handleUpdateRecord} title={"Editar expediente clinico"} buttonText={"Guardar cambios"} loading={loadingB}/>
+            <RecordForm initialData={data} dataPatient={dataUser} onSubmit={handleUpdateRecord} title={"Editar expediente clinico"} buttonText={"Guardar cambios"} loading={loadingB} />
+
+            {notification.message && (
+                <MessageNotification
+                    message={notification.message}
+                    type={notification.type}
+                    onClose={() => setNotification({ message: "", type: "" })}
+                />
+            )}
         </Layout>
     )
 }

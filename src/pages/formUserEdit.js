@@ -2,41 +2,42 @@ import Layout from "@/components/Layout";
 import RecordUser from "@/components/RecordUser";
 import { useEffect, useState } from "react";
 import { useRouter } from 'next/router';
+import MessageNotification from '@/components/MessageNotification';
 
 import jwt from 'jsonwebtoken';
 
 export async function getServerSideProps(context) {
-  const { req, res } = context;
-  const token = req.cookies.token; // Obtén el token desde las cookies
+    const { req, res } = context;
+    const token = req.cookies.token; // Obtén el token desde las cookies
 
-  if (!token) {
-    // Si no hay token, redirige al login
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false, // Redirección temporal
-      },
-    };
-  }
+    if (!token) {
+        // Si no hay token, redirige al login
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false, // Redirección temporal
+            },
+        };
+    }
 
-  try {
-    // Decodifica el token para verificar su validez
-    const decoded = jwt.verify(token, process.env.JWT_SECRET); // Asegúrate de tener una clave secreta configurada
+    try {
+        // Decodifica el token para verificar su validez
+        const decoded = jwt.verify(token, process.env.JWT_SECRET); // Asegúrate de tener una clave secreta configurada
 
-    // Si el token es válido, permite el acceso
-    return {
-      props: {},
-    };
-  } catch (error) {
-    // Si el token es inválido o ha caducado, redirige al login
-    res.setHeader('Set-Cookie', 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly;');
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    };
-  }
+        // Si el token es válido, permite el acceso
+        return {
+            props: {},
+        };
+    } catch (error) {
+        // Si el token es inválido o ha caducado, redirige al login
+        res.setHeader('Set-Cookie', 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly;');
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false,
+            },
+        };
+    }
 }
 
 const formUserEdit = () => {
@@ -45,6 +46,8 @@ const formUserEdit = () => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+
+    const [notification, setNotification] = useState({ message: "", type: "" });
 
     useEffect(() => {
         if (!id) return;
@@ -91,20 +94,19 @@ const formUserEdit = () => {
             });
 
             if (response.ok) {
-                console.log('Formulario actualizado con éxito');
-                console.log(formData);
-
-                // Redirigir al home
-                router.push(`/home`);
+                setNotification({ message: "Formulario actualizado con éxito", type: "success" });
+                setTimeout(() => {
+                    router.push(`/home`);
+                }, 2000);
 
             } else {
-                console.error('Error al enviar el formulario');
-
                 setError('Error al enviar el formulario. Inténtalo de nuevo.',);
+                setNotification({ message: "Error al enviar el formulario. Inténtalo de nuevo.", type: "error" });
             }
         } catch (error) {
             console.error('Error en la solicitud:', error);
             setError(`Ocurrió un error al enviar la solicitud. ${error}`);
+            setNotification({ message: "Ocurrió un error al enviar la solicitud.", type: "error" });
         }
     };
 
@@ -132,6 +134,14 @@ const formUserEdit = () => {
                 </div>
             )}
             <RecordUser initialData={data} onSubmit={handleUpdateRecord} title={"Editar Perfil"} editUser={true} />
+
+            {notification.message && (
+                <MessageNotification
+                    message={notification.message}
+                    type={notification.type}
+                    onClose={() => setNotification({ message: "", type: "" })}
+                />
+            )}
         </Layout>
     )
 }

@@ -2,41 +2,42 @@ import Layout from '@/components/Layout';
 import { useRouter } from 'next/router';
 import RecordExamDental from '@/components/RecordExamDental';
 import { useEffect, useState } from 'react';
+import MessageNotification from '@/components/MessageNotification';
 
 import jwt from 'jsonwebtoken';
 
 export async function getServerSideProps(context) {
-  const { req, res } = context;
-  const token = req.cookies.token; // Obtén el token desde las cookies
+    const { req, res } = context;
+    const token = req.cookies.token; // Obtén el token desde las cookies
 
-  if (!token) {
-    // Si no hay token, redirige al login
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false, // Redirección temporal
-      },
-    };
-  }
+    if (!token) {
+        // Si no hay token, redirige al login
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false, // Redirección temporal
+            },
+        };
+    }
 
-  try {
-    // Decodifica el token para verificar su validez
-    const decoded = jwt.verify(token, process.env.JWT_SECRET); // Asegúrate de tener una clave secreta configurada
+    try {
+        // Decodifica el token para verificar su validez
+        const decoded = jwt.verify(token, process.env.JWT_SECRET); // Asegúrate de tener una clave secreta configurada
 
-    // Si el token es válido, permite el acceso
-    return {
-      props: {},
-    };
-  } catch (error) {
-    // Si el token es inválido o ha caducado, redirige al login
-    res.setHeader('Set-Cookie', 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly;');
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    };
-  }
+        // Si el token es válido, permite el acceso
+        return {
+            props: {},
+        };
+    } catch (error) {
+        // Si el token es inválido o ha caducado, redirige al login
+        res.setHeader('Set-Cookie', 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly;');
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false,
+            },
+        };
+    }
 }
 
 const examenDentalEdit = () => {
@@ -49,31 +50,32 @@ const examenDentalEdit = () => {
     const [error, setError] = useState("");
     const [dataUser, setDataUser] = useState(null);
 
+    const [notification, setNotification] = useState({ message: "", type: "" });
+
     useEffect(() => {
-        if (!id) return; // Evita hacer la solicitud si no hay un id
-        // Función para hacer la solicitud GET
+        if (!id) return;
         const fetchData = async () => {
             try {
                 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-                const response = await fetch(`${apiUrl}/api/dentalExam/get/${id}`); 
+                const response = await fetch(`${apiUrl}/api/dentalExam/get/${id}`);
                 if (!response.ok) {
                     throw new Error('Error en la solicitud');
                 }
-                const dataForm = await response.json(); 
+                const dataForm = await response.json();
                 setData(dataForm);
 
-                const responseUser = await fetch(`${apiUrl}/api/auth/getPatient/${patId}`); // URL de la API
+                const responseUser = await fetch(`${apiUrl}/api/auth/getPatient/${patId}`);
                 if (!responseUser.ok) {
                     throw new Error('Error al obtener los datos del Paciente');
                 }
-                const data = await responseUser.json(); // Convierte la respuesta en un objeto JSON
+                const data = await responseUser.json();
                 setDataUser(data);
 
             } catch (error) {
-                setError(error.message); // Guarda el error en el estado
+                setError(error.message);
             } finally {
 
-                setLoading(false); // Oculta el indicador de carga
+                setLoading(false);
             }
         };
 
@@ -94,21 +96,19 @@ const examenDentalEdit = () => {
             });
 
             if (response.ok) {
-                console.log('Formulario actualizado con éxito');
-                console.log(dientes);
-
-                // Redirigir al login
-                router.push(`/mostrarExamenDental?id=${patId}`);
+                setNotification({ message: "Formulario actualizado con éxito", type: "success" });
+                setTimeout(() => {
+                    router.push(`/mostrarExamenDental?id=${patId}`);
+                }, 2000);
 
             } else {
-                console.error('Error al enviar el formulario');
-                const result = await response.json();
-                console.log("Error:", result);
                 setError('Error al enviar el formulario. Inténtalo de nuevo.',);
+                setNotification({ message: "Error al enviar el formulario. Inténtalo de nuevo.", type: "error" });
             }
         } catch (error) {
             console.error('Error en la solicitud:', error);
             setError(`Ocurrió un error al enviar la solicitud. ${error}`);
+            setNotification({ message: "Ocurrió un error al enviar la solicitud.", type: "error" });
         } finally {
             setLoadingB(false);
         }
@@ -138,8 +138,15 @@ const examenDentalEdit = () => {
                     </span>
                 </div>
             )}
-            
             <RecordExamDental initialData={data} dataPatient={dataUser} onSubmit={handleUpdateExam} title={"Editar examen Dental"} validLife={true} viewData={false} buttonText={"Guardar cambios"} loading={loadingB} />
+
+            {notification.message && (
+                <MessageNotification
+                    message={notification.message}
+                    type={notification.type}
+                    onClose={() => setNotification({ message: "", type: "" })}
+                />
+            )}
         </Layout>
     )
 }

@@ -146,6 +146,18 @@ const RecordForm = ({ initialData = {}, dataPatient = {}, onSubmit, title, butto
         return true;
     };
 
+    const handleStepClick = (step) => {
+        if (step > currentStep) {
+            // Si se intenta avanzar, valida los pasos anteriores
+            if (validarStep()) {
+                setCurrentStep(step);
+            }
+        } else {
+            // Permitir retroceder sin validaciones
+            setCurrentStep(step);
+        }
+    };
+
     useEffect(() => {
         setFormData((prevData) => ({ ...prevData, ...initialData }));
     }, []);
@@ -326,7 +338,8 @@ const RecordForm = ({ initialData = {}, dataPatient = {}, onSubmit, title, butto
                     {[1, 2, 3, 4, 5].map((step) => (
                         <div
                             key={step}
-                            className={`w-8 h-8 flex items-center justify-center rounded-full mx-2 
+                            onClick={() => handleStepClick(step)}
+                            className={`w-8 h-8 flex items-center justify-center rounded-full mx-2 cursor-pointer
                                 ${currentStep === step ? "bg-blue-500 text-white" : "bg-gray-300 text-gray-500"}`}
                         >
                             {step}

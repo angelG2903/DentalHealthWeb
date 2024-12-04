@@ -107,7 +107,6 @@ const promotion = () => {
             });
 
             if (response.ok) {
-                // Actualizar la lista de promociones según sea necesario
                 setNotification({ message: "Promoción guardada exitosamente", type: "success" });
             } else {
                 setNotification({ message: "Hubo un error al guardar la promoción", type: "error" });

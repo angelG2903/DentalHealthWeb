@@ -1,27 +1,30 @@
 import { useEffect, useState } from "react";
 import Cookies from 'js-cookie';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMessage, faXmark, faCalendar } from '@fortawesome/free-solid-svg-icons';
+import { faMessage, faXmark } from '@fortawesome/free-solid-svg-icons';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 
 const ModalAgenda = ({ isOpen, closeModal }) => {
 
     const [citas, setCitas] = useState(null);
+    const [selectedDate, setSelectedDate] = useState(new Date());
 
     useEffect(() => {
         if (isOpen) {
-            fetchAppointmentsData();
+            fetchAppointmentsData(selectedDate);
 
         }
 
-    }, [!isOpen]);
+    }, [!isOpen, selectedDate]);
 
-    const fetchAppointmentsData = async () => {
+    const fetchAppointmentsData = async (date) => {
         try {
             const cookies = Cookies.get();
             const token = cookies.token;
 
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-            const response = await fetch(`${apiUrl}/api/appointment/getAppointments`, {
+            const response = await fetch(`${apiUrl}/api/appointment/getAppointments?date=${date.toISOString().split('T')[0]}`, {
                 headers: {
                     Authorization: `${token}`,
                 },
@@ -72,10 +75,22 @@ const ModalAgenda = ({ isOpen, closeModal }) => {
                 </div>
 
                 {/* Sección de la fecha */}
-                <div className="p-4 text-center bg-blue-500 text-white">
+                {/* <div className="p-4 text-center bg-blue-500 text-white">
                     <p className="text-lg font-bold">{formattedDate}</p>
                     <p className="text-sm">Hoy</p>
-                    {/* Aquí podrías colocar un calendario si es necesario */}
+                    
+                </div> */}
+
+                {/* AQUI QUIERO EL CALENDARIO PARA SELECCIONAR EL DIA PARA MOSTAR LAS CITAS DEL DIA SELECCIONADO */}
+                <div className="p-4 text-center bg-blue-500 text-white flex flex-col justify-items-center">
+                    <p className="text-lg font-bold mt-3 mb-3">
+                        {selectedDate.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' })}
+                    </p>
+                    <Calendar
+                        className="text-gray-700 w-full mx-auto bg-white shadow-md rounded-lg"
+                        onChange={setSelectedDate}
+                        value={selectedDate}
+                    />
                 </div>
 
                 {/* Contenedor de citas con scroll */}
@@ -103,20 +118,12 @@ const ModalAgenda = ({ isOpen, closeModal }) => {
                             </div>
                         ))
                     ) : (
-                        <p className="text-gray-500">No hay citas para este día.</p>
+                        <p className="text-gray-500 text-center">No hay citas para este día.</p>
                     )}
                 </div>
 
-                {/* Botón para agregar más citas */}
-                <div className="flex justify-center my-4">
-                    <button className="text-lg">
-                        <FontAwesomeIcon
-                            icon={faCalendar}
-                            size="lg"
-                            className={`cursor-pointer text-gray-500 hover:text-blue-500`}
-                        />
-                    </button>
-                </div>
+                
+                
             </div>
         </div>
     );

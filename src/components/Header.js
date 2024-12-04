@@ -175,7 +175,7 @@ const Header = () => {
                   </Link>
                 </li>
               )}
-              {currentRoute !== '/promotion' && currentRoute !== '/mostrarExpedientes' && currentRoute !== '/expediente' && currentRoute !== '/expedienteEdit' && currentRoute !== '/mostrarExamenDental' && currentRoute !== '/examenDental' && currentRoute !== '/examenDentalEdit' && currentRoute !== '/verExamenDental' && (
+              {currentRoute !== '/promotion' && currentRoute !== '/mostrarExpedientes' && currentRoute !== '/expediente' && currentRoute !== '/expedienteEdit' && currentRoute !== '/mostrarExamenDental' && currentRoute !== '/examenDental' && currentRoute !== '/examenDentalEdit' && currentRoute !== '/verExamenDental' && currentRoute !== '/formUserEdit' && (
                 <li>
                   <button
                     onClick={() => {
@@ -188,7 +188,7 @@ const Header = () => {
                   </button>
                 </li>
               )}
-              {currentRoute !== '/mostrarExpedientes' && currentRoute !== '/mostrarExamenDental' && currentRoute !== '/examenDental' && currentRoute !== '/examenDentalEdit' && currentRoute !== '/expedienteEdit' && currentRoute !== '/expediente' && currentRoute !== '/promotion' && currentRoute !== '/verExamenDental' && (
+              {currentRoute !== '/mostrarExpedientes' && currentRoute !== '/mostrarExamenDental' && currentRoute !== '/examenDental' && currentRoute !== '/examenDentalEdit' && currentRoute !== '/expedienteEdit' && currentRoute !== '/expediente' && currentRoute !== '/promotion' && currentRoute !== '/verExamenDental' && currentRoute !== '/formUserEdit' && (
                 <li>
                   <button
                     onClick={() => {
@@ -201,7 +201,7 @@ const Header = () => {
                   </button>
                 </li>
               )}
-              {currentRoute !== '/promotion' && currentRoute !== '/mostrarExpedientes' && currentRoute !== '/expediente' && currentRoute !== '/expedienteEdit' && currentRoute !== '/mostrarExamenDental' && currentRoute !== '/examenDental' && currentRoute !== '/examenDentalEdit' && currentRoute !== '/verExamenDental' && (
+              {currentRoute !== '/promotion' && currentRoute !== '/mostrarExpedientes' && currentRoute !== '/expediente' && currentRoute !== '/expedienteEdit' && currentRoute !== '/mostrarExamenDental' && currentRoute !== '/examenDental' && currentRoute !== '/examenDentalEdit' && currentRoute !== '/verExamenDental' && currentRoute !== '/formUserEdit' && (
                 <li>
                   <Link href="/promotion" className="hover:bg-blue-500 rounded-md p-1 text-white block text-center">Promociónes</Link>
                 </li>

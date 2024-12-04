@@ -1,4 +1,4 @@
-const ConfirmationModal = ({ isOpen, onConfirm, onCancel, title, message }) => {
+const ConfirmationModal = ({ isOpen, onConfirm, onCancel, title, message, buttonText, buttonTextC, styles }) => {
     if (!isOpen) return null;
 
     return (
@@ -11,13 +11,13 @@ const ConfirmationModal = ({ isOpen, onConfirm, onCancel, title, message }) => {
                         onClick={onCancel}
                         className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
                     >
-                        Cancelar
+                        {buttonTextC ? buttonTextC : 'Cancelar'}
                     </button>
                     <button
                         onClick={onConfirm}
-                        className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                        className={`text-white px-4 py-2 rounded ${styles ? styles : "hover:bg-red-600 bg-red-500"}`}
                     >
-                        Eliminar
+                        {buttonText ? buttonText : 'Eliminar'}
                     </button>
                 </div>
             </div>

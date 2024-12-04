@@ -9,22 +9,22 @@ import MessageNotification from '@/components/MessageNotification';
 const MostrarListEx = ({ content, data, setData, deleteType, message }) => {
 
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false); // Estado para el modal de confirmación
-    const [promotionToDelete, setPromotionToDelete] = useState(null);
+    const [expedientToDelete, setExpedientToDelete] = useState(null);
     const [notification, setNotification] = useState({ message: "", type: "" });
 
     const confirmDelete = (id) => {
-        setPromotionToDelete(id);
+        setExpedientToDelete(id);
         setIsConfirmModalOpen(true);
     };
 
     const handleDelete = async () => {
         try {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-            const response = await fetch(`${apiUrl}/api/medicalForm/delete/${promotionToDelete}`, {
+            const response = await fetch(`${apiUrl}/api/medicalForm/delete/${expedientToDelete}`, {
                 method: "DELETE",
             });
             if (response.ok) {
-                setData(data.filter((expediente) => expediente.id !== promotionToDelete));
+                setData(data.filter((expediente) => expediente.id !== expedientToDelete));
                 setNotification({ message: "Expediente eliminado exitosamente", type: "success" });
             } else {
                 setNotification({ message: "Hubo un error al eliminar el expediente", type: "error" });
@@ -34,18 +34,18 @@ const MostrarListEx = ({ content, data, setData, deleteType, message }) => {
             setNotification({ message: "Ocurrió un error al intentar eliminar el expediente.", type: "error" });
         } finally {
             setIsConfirmModalOpen(false);
-            setPromotionToDelete(null);
+            setExpedientToDelete(null);
         }
     };
 
     const handleDeleteDental = async () => {
         try {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-            const response = await fetch(`${apiUrl}/api/dentalExam/delete/${promotionToDelete}`, {
+            const response = await fetch(`${apiUrl}/api/dentalExam/delete/${expedientToDelete}`, {
                 method: "DELETE",
             });
             if (response.ok) {
-                setData(data.filter((expediente) => expediente.id !== promotionToDelete));
+                setData(data.filter((expediente) => expediente.id !== expedientToDelete));
                 setNotification({ message: "Examen dental eliminado exitosamente", type: "success" });
             } else {
                 setNotification({ message: "Hubo un error al eliminar el examen dental", type: "error" });
@@ -55,7 +55,7 @@ const MostrarListEx = ({ content, data, setData, deleteType, message }) => {
             setNotification({ message: "Ocurrió un error al intentar eliminar el examen dental.", type: "error" });
         } finally {
             setIsConfirmModalOpen(false);
-            setPromotionToDelete(null);
+            setExpedientToDelete(null);
         }
     };
 

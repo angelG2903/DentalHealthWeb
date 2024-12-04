@@ -85,7 +85,7 @@ const ViewRecordForm = ({ initialData = {}, dataPatient = {}, title, buttonText,
     }, [dataPatient])
 
     const handleGoBack = () => {
-        router.back(); 
+        router.back();
     };
     return (
         <div className="min-h-screen bg-gray-100 flex items-center justify-center py-8">
@@ -117,7 +117,8 @@ const ViewRecordForm = ({ initialData = {}, dataPatient = {}, title, buttonText,
                     {[1, 2, 3, 4, 5].map((step) => (
                         <div
                             key={step}
-                            className={`w-8 h-8 flex items-center justify-center rounded-full mx-2 
+                            onClick={() => setCurrentStep(step)}
+                            className={`w-8 h-8 flex items-center justify-center rounded-full mx-2 cursor-pointer
                                 ${currentStep === step ? "bg-blue-500 text-white" : "bg-gray-300 text-gray-500"}`}
                         >
                             {step}
