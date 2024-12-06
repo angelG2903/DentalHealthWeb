@@ -66,7 +66,7 @@ const formUser = () => {
                     </span>
                 </div>
             )}
-            <RecordUser onSubmit={handleSubmit} title={"Registro Dentista"} />
+            <RecordUser onSubmit={handleSubmit} title={"Registro Dentista"} editUser={false}/>
         </Layout>
 
     )

@@ -96,7 +96,7 @@ const promotion = () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         const url = promotionData
             ? `${apiUrl}/api/promotion/update/${promotionData.id}`
-            : `${apiUrl}/api/promotion/create/${2}`;
+            : `${apiUrl}/api/promotion/create/${4}`;
 
         const method = promotionData ? 'PUT' : 'POST';
 
@@ -231,7 +231,12 @@ const promotion = () => {
                     </div>
 
                     {/* Botón flotante para agregar nuevas promociones */}
-                    <button onClick={() => setIsModalOpen(true)} className="group fixed bottom-16 right-6 bg-blue-500 text-white p-3 rounded-full shadow-lg hover:bg-blue-600">
+                    <button onClick={() => {
+                        setIsModalOpen(true);
+                        setPromotionData(null);
+                        }} 
+                        className="group fixed bottom-16 right-6 bg-blue-500 text-white p-3 rounded-full shadow-lg hover:bg-blue-600"
+                    >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             className="h-6 w-6"

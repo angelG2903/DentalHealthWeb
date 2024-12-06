@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMessage } from '@fortawesome/free-solid-svg-icons';
 import io from 'socket.io-client';
 
-const socket = io('http://192.168.100.23:5000', {
+const socket = io('https://dental-health-api.onrender.com', {
     transports: ['websocket']
 });
 
@@ -25,6 +25,22 @@ const ModalContact = ({ isOpen, closeModal }) => {
     useEffect(() => {
         if (selectedPatient) {
             fetchMessages(selectedPatient.id);
+            
+            socket.on('receive_private_message', (data) => {
+                setMensajes((prevMensajes) => [
+                    ...prevMensajes,
+                    { 
+                        id: prevMensajes.length + 1, 
+                        message: data.message, 
+                        senderId: data.fromUserId,
+                        receiverId: data.toUserId,
+                    },
+                ]);
+            });
+
+            return () => {
+                socket.off('receive_private_message');
+            };
         }
     }, [selectedPatient]);
 
@@ -60,21 +76,7 @@ const ModalContact = ({ isOpen, closeModal }) => {
                 socket.emit('register', data.id);
 
                 // Escuchar mensajes privados
-                socket.on('receive_private_message', (data) => {
-                    setMensajes((prevMensajes) => [
-                        ...prevMensajes,
-                        { 
-                            id: prevMensajes.length + 1, 
-                            message: data.message, 
-                            senderId: data.fromUserId,
-                            receiverId: data.toUserId,
-                        },
-                    ]);
-                });
-
-                return () => {
-                    socket.off('receive_private_message');
-                };
+                
 
             } else {
                 console.error('Error al obtener el perfil');

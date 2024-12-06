@@ -12,7 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown, faCaretUp, faBell, faHome } from '@fortawesome/free-solid-svg-icons';
 import io from 'socket.io-client';
 
-const socket = io('http://192.168.100.23:5000', {
+const socket = io('https://dental-health-api.onrender.com', {
   transports: ['websocket']
 });
 
@@ -41,7 +41,7 @@ const Header = () => {
       socket.off('newNotification');
     };
   }, []);
-
+/*  */
   useEffect(() => {
     const fetchPerfilData = async () => {
       try {

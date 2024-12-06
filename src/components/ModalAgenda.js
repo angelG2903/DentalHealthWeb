@@ -4,11 +4,19 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMessage, faXmark } from '@fortawesome/free-solid-svg-icons';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import { toZonedTime } from 'date-fns-tz';  // Importar la función
+import { startOfDay } from 'date-fns';
 
 const ModalAgenda = ({ isOpen, closeModal }) => {
 
     const [citas, setCitas] = useState(null);
-    const [selectedDate, setSelectedDate] = useState(new Date());
+
+    // const [selectedDate, setSelectedDate] = useState(new Date());
+    const [selectedDate, setSelectedDate] = useState(() => {
+        const timeZone = 'America/Mexico_City';
+        const mexicoTime = toZonedTime(new Date(), timeZone);  // Obtener la fecha actual en la zona horaria de México
+        return startOfDay(mexicoTime); // Ajustamos la hora a las 00:00:00
+    });
 
     useEffect(() => {
         if (isOpen) {
@@ -74,14 +82,6 @@ const ModalAgenda = ({ isOpen, closeModal }) => {
                     </button>
                 </div>
 
-                {/* Sección de la fecha */}
-                {/* <div className="p-4 text-center bg-blue-500 text-white">
-                    <p className="text-lg font-bold">{formattedDate}</p>
-                    <p className="text-sm">Hoy</p>
-                    
-                </div> */}
-
-                {/* AQUI QUIERO EL CALENDARIO PARA SELECCIONAR EL DIA PARA MOSTAR LAS CITAS DEL DIA SELECCIONADO */}
                 <div className="p-4 text-center bg-blue-500 text-white flex flex-col justify-items-center">
                     <p className="text-lg font-bold mt-3 mb-3">
                         {selectedDate.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' })}
@@ -122,8 +122,8 @@ const ModalAgenda = ({ isOpen, closeModal }) => {
                     )}
                 </div>
 
-                
-                
+
+
             </div>
         </div>
     );

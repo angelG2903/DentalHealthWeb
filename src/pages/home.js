@@ -109,7 +109,7 @@ const Home = () => {
                 {data.map((promotion, index) => (
                   <div key={index} className="flex flex-col bg-white rounded-xl overflow-hidden">
                     {/* Imagen */}
-                    <div className="relative w-full h-64">
+                    <div className="relative w-full">
                       <Image
                         src={promotion.promotionalImageUrl || logo2} // Usa una imagen por defecto si no hay src
                         alt={"Imagen por defecto"}
