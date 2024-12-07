@@ -1,15 +1,34 @@
 import { useEffect, useState } from "react";
 import ConfirmationModal from '@/components/ConfirmationModal';
 import MessageNotification from '@/components/MessageNotification';
-
+import io from 'socket.io-client';
+const api = process.env.NEXT_PUBLIC_API_URL;
+const socket = io(api, {
+  transports: ['websocket']
+});
 const Notification = ({ isOpen, closeModal }) => {
+
+  useEffect(() => {
+    socket.emit('register', 3);
+    // Escuchar el evento de nueva notificación desde el servidor
+    socket.on('receive_private_notification', (data) => {
+      console.log(data.message); // Ver mensaje de notificación en consola
+    });
+
+    // Limpia el evento al desmontar el componente
+    return () => {
+      socket.off('receive_private_notification');
+    };
+  }, []);
 
   const [notifications, setNotifications] = useState(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [confirmAppont, setConfirmAppont] = useState(null);
+  const [confirmAppontId, setConfirmAppontId] = useState(null);
 
   const [isConfirmModalOpenCancel, setIsConfirmModalOpenCancel] = useState(false);
   const [cancelAppont, setCancelAppont] = useState(null);
+  const [cancelAppontId, setCancelAppontId] = useState(null);
 
   const [notification, setNotification] = useState({ message: "", type: "" });
 
@@ -58,6 +77,7 @@ const Notification = ({ isOpen, closeModal }) => {
 
       if (response.ok) {
         setNotification({ message: "Cita confirmada", type: "success" });
+        socket.emit('confirmed', { toUserId: confirmAppontId });
         fetchNotificationsData();
       } else {
         setNotification({ message: "Error al confirmar la cita", type: "error" });
@@ -68,11 +88,13 @@ const Notification = ({ isOpen, closeModal }) => {
     } finally {
       setIsConfirmModalOpen(false);
       setConfirmAppont(null);
+      setConfirmAppontId(null);
     }
   };
 
-  const confirm = (id) => {
+  const confirm = (id, patientId) => {
     setConfirmAppont(id);
+    setConfirmAppontId(patientId);
     setIsConfirmModalOpen(true);
   };
 
@@ -85,6 +107,7 @@ const Notification = ({ isOpen, closeModal }) => {
 
       if (response.ok) {
         setNotification({ message: "La Cita ha sido cancelada", type: "error" });
+        socket.emit('cancel', { toUserId: cancelAppontId });
         fetchNotificationsData();
       } else {
         setNotification({ message: "Error al cancelar la cita", type: "error" });
@@ -98,8 +121,9 @@ const Notification = ({ isOpen, closeModal }) => {
     }
   };
 
-  const cancel = (id) => {
+  const cancel = (id, patientId) => {
     setCancelAppont(id);
+    setCancelAppontId(patientId);
     setIsConfirmModalOpenCancel(true);
   };
 
@@ -139,13 +163,13 @@ const Notification = ({ isOpen, closeModal }) => {
                 <div className="flex flex-col sm:flex-row justify-end mt-4 space-y-2 sm:space-y-0 space-x-0 sm:space-x-2">
                   <button
                     className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                    onClick={() => confirm(notification.appointmentId)}
+                    onClick={() => confirm(notification.appointmentId, notification.Patient.id)}
                   >
                     Confirmar cita
                   </button>
                   <button
                     className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                    onClick={() => cancel(notification.appointmentId)}
+                    onClick={() => cancel(notification.appointmentId, notification.Patient.id)}
                   >
                     Cancelar
                   </button>

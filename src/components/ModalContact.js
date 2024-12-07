@@ -4,7 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMessage } from '@fortawesome/free-solid-svg-icons';
 import io from 'socket.io-client';
 
-const socket = io('https://dental-health-api.onrender.com', {
+const api = process.env.NEXT_PUBLIC_API_URL;
+const socket = io(api, {
     transports: ['websocket']
 });
 

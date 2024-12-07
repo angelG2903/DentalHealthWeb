@@ -84,7 +84,7 @@ const Home = () => {
   return (
     <Layout>
 
-      <div className="min-h-screen flex flex-col items-center justify-center py-4 bg-gray-50">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
 
         {/* Título */}
         <h1 className="text-2xl font-bold mb-4">Tus promociones publicadas</h1>
@@ -109,13 +109,14 @@ const Home = () => {
                 {data.map((promotion, index) => (
                   <div key={index} className="flex flex-col bg-white rounded-xl overflow-hidden">
                     {/* Imagen */}
-                    <div className="relative w-full">
+                    <div className="relative w-full max-h-full overflow-hidden bg-gray-200">
                       <Image
                         src={promotion.promotionalImageUrl || logo2} // Usa una imagen por defecto si no hay src
                         alt={"Imagen por defecto"}
-                        width={600}
-                        height={400}
+                        width={16}
+                        height={9}
                         priority={true}
+                        layout="responsive"
                         className="object-cover w-full h-full"
                       />
                     </div>

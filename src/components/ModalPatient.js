@@ -79,7 +79,7 @@ const ModalPacientes = ({ isOpen, closeModal, props }) => {
                         {filteredPacientes.length > 0 ? (
                             filteredPacientes.map((paciente) => (
                                 <div key={paciente.id} className="p-4 mb-4 rounded-md items-center shadow-lg">
-                                    <div className="flex justify-center mb-4">
+                                    {/* <div className="flex justify-center mb-4">
                                         <Image
                                             src={paciente.profilePictureUrl || imagenP}
                                             alt="Perfil"
@@ -89,7 +89,7 @@ const ModalPacientes = ({ isOpen, closeModal, props }) => {
                                             height={400}
                                             quality={100}
                                         />
-                                    </div>
+                                    </div> */}
                                     <div className="mb-4">
                                         <p>{paciente.Login.name} {paciente.Login.lastName}</p>
                                         <p>Número de telefono: {paciente.Login.phoneNumber}</p>
