@@ -133,9 +133,9 @@ const Home = () => {
             ) : (
               <div className="flex justify-center items-center">
                 <Image
-                  src={"/img/logo3.png"}
+                  src={"/img/Logo3.png"}
                   alt="Imagen de promoción por defecto"
-                  width={800}
+                  width={16}
                   height={9}
                   className="rounded-lg shadow-lg"
                 />
