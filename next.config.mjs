@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
+    loader: 'imgix', // Utiliza un loader externo como Imgix
+    disableStaticImages: true, // Deshabilita la optimización de imágenes locales
     remotePatterns: [
       {
         protocol: process.env.NEXT_PUBLIC_PROTOCOL,
