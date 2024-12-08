@@ -58,24 +58,24 @@ const Home = () => {
   useEffect(() => {
     // Función para hacer la solicitud GET
     const fetchData = async () => {
-        try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-            const response = await fetch(`${apiUrl}/api/promotion/get`); // URL de la API
-            if (!response.ok) {
-                throw new Error('Error en la solicitud');
-            }
-
-            const data = await response.json(); // Convierte la respuesta en un objeto JSON
-            setData(data); // Guarda los datos en el estado
-        } catch (error) {
-            setError(error.message); // Guarda el error en el estado
-        } finally {
-            setLoading(false); // Oculta el indicador de carga
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const response = await fetch(`${apiUrl}/api/promotion/get`); // URL de la API
+        if (!response.ok) {
+          throw new Error('Error en la solicitud');
         }
+
+        const data = await response.json(); // Convierte la respuesta en un objeto JSON
+        setData(data); // Guarda los datos en el estado
+      } catch (error) {
+        setError(error.message); // Guarda el error en el estado
+      } finally {
+        setLoading(false); // Oculta el indicador de carga
+      }
     };
-    
+
     fetchData(); // Llama a la función fetchData cuando se monta el componente
-}, []);
+  }, []);
 
 
 
@@ -94,7 +94,7 @@ const Home = () => {
           <div className="flex justify-center items-center h-56">
             <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
           </div>
-        ): (
+        ) : (
           <div className="w-full max-w-96 md:max-w-xl">
             {data.length > 0 ? (
               <Carousel
@@ -137,7 +137,9 @@ const Home = () => {
                   alt="Imagen de promoción por defecto"
                   width={16}
                   height={9}
-                  className="rounded-lg shadow-lg"
+                  priority={true}
+                  layout="responsive"
+                  className="rounded-lg shadow-lg object-cover w-full h-full"
                 />
               </div>
             )}
@@ -161,8 +163,8 @@ const Home = () => {
       </button>
 
       <ModalMessages isOpen={isOpenMess} closeModal={() => setIsOpenMess(false)} />
-        
-      <ModalContact isOpen={isOpenContacts} closeModal={() => setIsOpenContacts(false)}/>
+
+      <ModalContact isOpen={isOpenContacts} closeModal={() => setIsOpenContacts(false)} />
     </Layout>
   );
 };
