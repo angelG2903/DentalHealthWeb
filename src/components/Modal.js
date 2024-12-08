@@ -44,7 +44,7 @@ const Modal = ({ isOpen, closeModal, title }) => {
 
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
-      <div className="relative bg-white w-10/12 sm:w-2/3 md:w-1/2 lg:w-1/3 xl:w-2/6 rounded-lg overflow-hidden shadow-lg">
+      <div className="relative bg-white w-10/12 sm:w-2/3 md:w-1/2 lg:w-1/3 xl:w-2/6 rounded-lg overflow-hidden shadow-lg  ">
         {/* Modal Header */}
         <div className="bg-blue-500 py-3 px-4 relative">
           <h2 className="text-white text-lg">{title}</h2>
@@ -57,7 +57,7 @@ const Modal = ({ isOpen, closeModal, title }) => {
         </div>
 
         {/* Modal Content (contenido dinámico) */}
-        <div className="p-4">
+        <div className="p-4 max-h-[80vh] h-auto overflow-y-auto menu-scroll">
 
           <div className="flex justify-center mb-4">
             <Image
