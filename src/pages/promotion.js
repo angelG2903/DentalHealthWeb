@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import Image from 'next/image';
-import logo1 from '@@/img/logo3.png';
-import logo2 from '@@/img/logo4.png';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen, faTrash, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import ModalPromotion from '@/components/ModalPromotion';
@@ -212,8 +210,10 @@ const promotion = () => {
                                         )}
                                         {publicacion.promotionalImage === null && (
                                             <Image
-                                                src={logo1}
+                                                src={"/img/logo3.png"}
                                                 alt={"Imagen por default"}
+                                                width={16}
+                                                height={9}
                                                 priority={true}
                                                 className="object-cover w-full h-full"
                                             />
