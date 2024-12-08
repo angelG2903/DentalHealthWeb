@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import imagenP from '@@/img/logo3.png'; // Imagen de perfil de prueba
+// import imagenP from '@@/img/logo3.png'; 
 import Image from 'next/image';
 
 const ModalPacientes = ({ isOpen, closeModal, props }) => {

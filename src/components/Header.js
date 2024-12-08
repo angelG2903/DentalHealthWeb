@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Image from 'next/image';
-import logo1 from '@@/img/logo3.png';
+// import logo1 from '@@/img/logo3.png';
 import Modal from './Modal';
 import ModalPatient from './ModalPatient';
 import Notification from './Notifications';
@@ -97,9 +97,10 @@ const Header = () => {
         <div className={`${showNavBar ? 'flex items-center' : ''}`}
         >
           <Image
-            src={logo1}
+            src={"/img/logo3.png"}
             alt="Dental Health Logo"
             width={`${showNavBar ? 70 : 120}`}
+            height={9}
             priority={true}
             className="rounded-full"
           />

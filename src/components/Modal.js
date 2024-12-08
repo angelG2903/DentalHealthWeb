@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
-import imagenP from '@@/img/logo3.png'; // Imagen de perfil de prueba
+// import imagenP from '@@/img/logo3.png';
 import Link from 'next/link';
 
 
@@ -62,7 +62,7 @@ const Modal = ({ isOpen, closeModal, title }) => {
 
           <div className="flex justify-center mb-4">
             <Image
-              src={perfil.profilePictureUrl || imagenP}
+              src={perfil.profilePictureUrl || "/img/logo3.png"}
               alt="Perfil"
               priority={true}
               className="rounded object-cover w-full h-full"

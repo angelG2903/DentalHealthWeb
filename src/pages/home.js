@@ -6,8 +6,8 @@ import ModalMessages from '@/components/ModalMessages';
 import ModalContact from "@/components/ModalContact";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // Import the CSS for the carousel
 import Image from 'next/image';
-import logo1 from '@@/img/logo3.png';
-import logo2 from '@@/img/logo4.png';
+/* import logo1 from '@@/img/logo3.png';
+import logo2 from '@@/img/logo4.png'; */
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMessage } from '@fortawesome/free-solid-svg-icons';
 
@@ -111,7 +111,7 @@ const Home = () => {
                     {/* Imagen */}
                     <div className="relative w-full max-h-full overflow-hidden bg-gray-200">
                       <Image
-                        src={promotion.promotionalImageUrl || logo2} // Usa una imagen por defecto si no hay src
+                        src={promotion.promotionalImageUrl || "/img/logo4.png"} // Usa una imagen por defecto si no hay src
                         alt={"Imagen por defecto"}
                         width={16}
                         height={9}
@@ -133,9 +133,10 @@ const Home = () => {
             ) : (
               <div className="flex justify-center items-center">
                 <Image
-                  src={logo1}
+                  src={"/img/logo3.png"}
                   alt="Imagen de promoción por defecto"
                   width={800}
+                  height={9}
                   className="rounded-lg shadow-lg"
                 />
               </div>
