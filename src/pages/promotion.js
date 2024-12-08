@@ -4,45 +4,46 @@ import Image from 'next/image';
 import logo1 from '@@/img/logo3.png';
 import logo2 from '@@/img/logo4.png';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faPen, faTrash, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import ModalPromotion from '@/components/ModalPromotion';
 import ConfirmationModal from '@/components/ConfirmationModal';
 import MessageNotification from '@/components/MessageNotification';
+import Cookies from 'js-cookie';
 
 import jwt from 'jsonwebtoken';
 
 export async function getServerSideProps(context) {
-  const { req, res } = context;
-  const token = req.cookies.token; // Obtén el token desde las cookies
+    const { req, res } = context;
+    const token = req.cookies.token; // Obtén el token desde las cookies
 
-  if (!token) {
-    // Si no hay token, redirige al login
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false, // Redirección temporal
-      },
-    };
-  }
+    if (!token) {
+        // Si no hay token, redirige al login
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false, // Redirección temporal
+            },
+        };
+    }
 
-  try {
-    // Decodifica el token para verificar su validez
-    const decoded = jwt.verify(token, process.env.JWT_SECRET); // Asegúrate de tener una clave secreta configurada
+    try {
+        // Decodifica el token para verificar su validez
+        const decoded = jwt.verify(token, process.env.JWT_SECRET); // Asegúrate de tener una clave secreta configurada
 
-    // Si el token es válido, permite el acceso
-    return {
-      props: {},
-    };
-  } catch (error) {
-    // Si el token es inválido o ha caducado, redirige al login
-    res.setHeader('Set-Cookie', 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly;');
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    };
-  }
+        // Si el token es válido, permite el acceso
+        return {
+            props: {},
+        };
+    } catch (error) {
+        // Si el token es inválido o ha caducado, redirige al login
+        res.setHeader('Set-Cookie', 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly;');
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false,
+            },
+        };
+    }
 }
 
 const promotion = () => {
@@ -56,6 +57,7 @@ const promotion = () => {
     const [data, setData] = useState(null); // Estado para almacenar los datos
     const [error, setError] = useState(null); // Estado para almacenar errores de fetch
     const [loading, setLoading] = useState(true); // Estado para mostrar un indicador de carga
+    const [perfil, setPerfil] = useState(null);
 
     useEffect(() => {
         // Función para hacer la solicitud GET
@@ -77,6 +79,31 @@ const promotion = () => {
         };
 
         fetchData(); // Llama a la función fetchData cuando se monta el componente
+
+        const fetchPerfilData = async () => {
+            try {
+                const cookies = Cookies.get();
+                const token = cookies.token;
+
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+                const response = await fetch(`${apiUrl}/api/auth/getDoctor`, {
+                    headers: {
+                        Authorization: `${token}`,
+                    },
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    setPerfil(data);
+                    console.log(data)
+                } else {
+                    console.error('Error al obtener el perfil');
+                }
+            } catch (error) {
+                console.error('Error en la solicitud: ', error);
+            }
+
+        };
+        fetchPerfilData();
     }, [isModalOpen]);
 
     useEffect(() => {
@@ -96,7 +123,7 @@ const promotion = () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         const url = promotionData
             ? `${apiUrl}/api/promotion/update/${promotionData.id}`
-            : `${apiUrl}/api/promotion/create/${4}`;
+            : `${apiUrl}/api/promotion/create/${perfil.id}`;
 
         const method = promotionData ? 'PUT' : 'POST';
 
@@ -165,76 +192,91 @@ const promotion = () => {
                     <h1 className="text-2xl font-medium text-center mt-8 mb-8">Promociones</h1>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 2xl:grid-cols-9 gap-6 justify-items-center">
-                        {data.map((publicacion, index) => (
-                            <div key={index} className="col-span-3 min-w-60 max-w-lg w-full grid grid-cols-12 bg-white shadow-xl rounded-lg overflow-hidden min-h-52">
-                                {/* Imagen de la promoción */}
+                        {data && data.length > 0 ? (
 
-                                <div className="col-span-12 md:col-span-5">
-                                    {publicacion.promotionalImage !== null && (
-                                        <Image
-                                            src={`${publicacion.promotionalImageUrl}`}
-                                            alt={"algo"}
-                                            priority={true}
-                                            className="object-cover w-full h-full"
-                                            width={400}
-                                            height={400}
-                                            quality={100}
-                                        />
-                                    )}
-                                    {publicacion.promotionalImage === null && (
-                                        <Image
-                                            src={logo1}
-                                            alt={"Imagen por default"}
-                                            priority={true}
-                                            className="object-cover w-full h-full"
-                                        />
-                                    )}
+                            data.map((publicacion, index) => (
+                                <div key={index} className="col-span-3 min-w-60 max-w-lg w-full grid grid-cols-12 bg-white shadow-xl rounded-lg overflow-hidden min-h-52">
+                                    {/* Imagen de la promoción */}
 
-
-                                </div>
-
-                                {/* Detalles de la promoción */}
-                                <div className="col-span-12 md:col-span-6 p-4">
-                                    <h3 className="text-xl font-bold mb-2">{publicacion.title}</h3>
-                                    <p className="text-gray-600">{publicacion.description}</p>
-                                </div>
+                                    <div className="col-span-12 md:col-span-5">
+                                        {publicacion.promotionalImage !== null && (
+                                            <Image
+                                                src={`${publicacion.promotionalImageUrl}`}
+                                                alt={"algo"}
+                                                priority={true}
+                                                className="object-cover w-full h-full"
+                                                width={400}
+                                                height={400}
+                                                quality={100}
+                                            />
+                                        )}
+                                        {publicacion.promotionalImage === null && (
+                                            <Image
+                                                src={logo1}
+                                                alt={"Imagen por default"}
+                                                priority={true}
+                                                className="object-cover w-full h-full"
+                                            />
+                                        )}
 
 
-                                <div className="col-span-12 md:col-span-1 flex justify-around md:grid bg-blue-500">
-                                    <div className="relative group">
-                                        <button
-                                            onClick={() => openEditModal(publicacion)}
-                                            className="text-white h-full w-full transform transition-transform duration-200 scale-100 hover:scale-110 p-2"
-                                        >
-                                            <FontAwesomeIcon icon={faPen} size="1x" className="text-white" />
-                                        </button>
-                                        <div className="absolute bottom-8 -left-7 transform -translate-x-1/2 mb-2 hidden group-hover:block bg-gray-800 text-white text-xs rounded-lg px-2 py-1 whitespace-nowrap">
-                                            Editar
+                                    </div>
+
+                                    {/* Detalles de la promoción */}
+                                    <div className="col-span-12 md:col-span-6 p-4">
+                                        <h3 className="text-xl font-bold mb-2">{publicacion.title}</h3>
+                                        <p className="text-gray-600">{publicacion.description}</p>
+                                    </div>
+
+
+                                    <div className="col-span-12 md:col-span-1 flex justify-around md:grid bg-blue-500">
+                                        <div className="relative group">
+                                            <button
+                                                onClick={() => openEditModal(publicacion)}
+                                                className="text-white h-full w-full transform transition-transform duration-200 scale-100 hover:scale-110 p-2"
+                                            >
+                                                <FontAwesomeIcon icon={faPen} size="1x" className="text-white" />
+                                            </button>
+                                            <div className="absolute bottom-8 -left-7 transform -translate-x-1/2 mb-2 hidden group-hover:block bg-gray-800 text-white text-xs rounded-lg px-2 py-1 whitespace-nowrap">
+                                                Editar
+                                            </div>
+                                        </div>
+                                        <div className="relative group">
+                                            <button
+                                                onClick={() => confirmDelete(publicacion.id)}
+                                                className="text-white h-full w-full transform transition-transform duration-200 scale-100 hover:scale-110 p-2"
+                                            >
+                                                <FontAwesomeIcon icon={faTrash} size="1x" className="text-white" />
+                                            </button>
+                                            <div className="absolute bottom-8 -left-7 transform -translate-x-1/2 mb-2 hidden group-hover:block bg-gray-800 text-white text-xs rounded-lg px-2 py-1 whitespace-nowrap">
+                                                Eliminar
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className="relative group">
-                                        <button
-                                            onClick={() => confirmDelete(publicacion.id)}
-                                            className="text-white h-full w-full transform transition-transform duration-200 scale-100 hover:scale-110 p-2"
-                                        >
-                                            <FontAwesomeIcon icon={faTrash} size="1x" className="text-white" />
-                                        </button>
-                                        <div className="absolute bottom-8 -left-7 transform -translate-x-1/2 mb-2 hidden group-hover:block bg-gray-800 text-white text-xs rounded-lg px-2 py-1 whitespace-nowrap">
-                                            Eliminar
-                                        </div>
-                                    </div>
+
+
                                 </div>
+                            ))
 
-
+                        ) : (
+                            <div className="col-span-9 grid grid-cols-9 text-center mt-5 ">
+                                <div className="col-span-9 mx-auto bg-yellow-100 border border-yellow-300 text-yellow-700 rounded-lg p-5 shadow-md">
+                                    <div className="flex justify-center items-center mb-3">
+                                        <FontAwesomeIcon icon={faExclamationTriangle} size="2x" className="text-yellow-500" />
+                                    </div>
+                                    <p className="text-lg font-semibold">
+                                        No hay promociones publicadas.
+                                    </p>
+                                </div>
                             </div>
-                        ))}
+                        )}
                     </div>
 
                     {/* Botón flotante para agregar nuevas promociones */}
                     <button onClick={() => {
                         setIsModalOpen(true);
                         setPromotionData(null);
-                        }} 
+                    }}
                         className="group fixed bottom-16 right-6 bg-blue-500 text-white p-3 rounded-full shadow-lg hover:bg-blue-600"
                     >
                         <svg

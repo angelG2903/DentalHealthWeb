@@ -74,7 +74,7 @@ const ModalContact = ({ isOpen, closeModal }) => {
                 setPerfil(data);
                 console.log(data);
 
-                socket.emit('register', data.id);
+                socket.emit('register', data.Login.id);
 
                 // Escuchar mensajes privados
                 
