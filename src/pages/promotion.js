@@ -210,7 +210,7 @@ const promotion = () => {
                                         )}
                                         {publicacion.promotionalImage === null && (
                                             <Image
-                                                src={"/img/logo3.png"}
+                                                src={"/img/Logo3.png"}
                                                 alt={"Imagen por default"}
                                                 width={16}
                                                 height={9}

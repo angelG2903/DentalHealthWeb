@@ -97,7 +97,7 @@ const Header = () => {
         <div className={`${showNavBar ? 'flex items-center' : ''}`}
         >
           <Image
-            src={"/img/logo3.png"}
+            src={"/img/Logo3.png"}
             alt="Dental Health Logo"
             width={`${showNavBar ? 70 : 120}`}
             height={9}
