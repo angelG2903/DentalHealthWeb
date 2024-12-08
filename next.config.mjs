@@ -1,13 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    
+    unoptimized: true, // Desactiva la optimización de imágenes
     disableStaticImages: true, // Deshabilita la optimización de imágenes locales
     remotePatterns: [
       {
-        protocol: process.env.NEXT_PUBLIC_PROTOCOL,
+        protocol: 'https',
         hostname: process.env.NEXT_PUBLIC_HOST_NAME,
-        port: process.env.NEXT_PUBLIC_PORT || "",
+        port: "",
         pathname: '/infrastructure/uploads/**',
       },
     ],

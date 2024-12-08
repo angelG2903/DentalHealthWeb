@@ -65,9 +65,8 @@ const Modal = ({ isOpen, closeModal, title }) => {
               alt="Perfil"
               priority={true}
               className="rounded object-cover w-full h-full"
-              width={400}
-              height={400}
-              quality={100}
+              width={16}
+              height={9}
             />
           </div>
           <h3 className="text-center text-xl font-bold">Dr. {perfil.Login?.name}</h3>
