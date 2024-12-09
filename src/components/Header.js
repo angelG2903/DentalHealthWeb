@@ -205,7 +205,7 @@ const Header = () => {
               )}
               {currentRoute !== '/promotion' && currentRoute !== '/mostrarExpedientes' && currentRoute !== '/expediente' && currentRoute !== '/expedienteEdit' && currentRoute !== '/mostrarExamenDental' && currentRoute !== '/examenDental' && currentRoute !== '/examenDentalEdit' && currentRoute !== '/verExamenDental' && currentRoute !== '/formUserEdit' && (
                 <li>
-                  <Link href="/promotion" className="hover:bg-blue-500 rounded-md p-1 text-white block text-center">Promociónes</Link>
+                  <Link href="/promotion" className="hover:bg-blue-500 rounded-md p-1 text-white block text-center">Promociones</Link>
                 </li>
               )}
               <li>

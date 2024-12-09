@@ -8,6 +8,7 @@ const socket = io(api, {
 });
 const Notification = ({ isOpen, closeModal }) => {
 
+  // Pruebas notificaciones para movil
   useEffect(() => {
     socket.emit('register', 3);
     // Escuchar el evento de nueva notificación desde el servidor
@@ -118,6 +119,7 @@ const Notification = ({ isOpen, closeModal }) => {
     } finally {
       setIsConfirmModalOpenCancel(false);
       setCancelAppont(null);
+      setCancelAppontId(null);
     }
   };
 

@@ -1,15 +1,26 @@
 import { useEffect, useState } from "react";
 import Cookies from 'js-cookie';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMessage, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { toZonedTime } from 'date-fns-tz';  // Importar la función
 import { startOfDay } from 'date-fns';
+import ConfirmationModal from '@/components/ConfirmationModal';
+import MessageNotification from '@/components/MessageNotification';
+import io from 'socket.io-client';
+const api = process.env.NEXT_PUBLIC_API_URL;
+const socket = io(api, {
+    transports: ['websocket']
+});
 
 const ModalAgenda = ({ isOpen, closeModal }) => {
 
     const [citas, setCitas] = useState(null);
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+    const [cancelAppont, setCancelAppont] = useState(null);
+    const [cancelAppontId, setCancelAppontId] = useState(null);
+    const [notification, setNotification] = useState({ message: "", type: "" });
 
     // const [selectedDate, setSelectedDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState(() => {
@@ -69,6 +80,36 @@ const ModalAgenda = ({ isOpen, closeModal }) => {
     let formattedDate = today.toLocaleDateString('es-ES', options);
     formattedDate = formattedDate.replace(/ de (\w+)/, (match, month) => ` de ${month.charAt(0).toUpperCase()}${month.slice(1)}`);
 
+    const cancelAppointment = async () => {
+        try {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+            const response = await fetch(`${apiUrl}/api/appointment/cancel/${cancelAppont}`, {
+                method: 'PUT',
+            });
+
+            if (response.ok) {
+                setNotification({ message: "La Cita ha sido cancelada", type: "error" });
+                socket.emit('cancel', { toUserId: cancelAppontId });
+                fetchAppointmentsData(selectedDate);
+            } else {
+                console.log(cancelAppont, cancelAppontId);
+                setNotification({ message: "Error al cancelar la cita", type: "error" });
+            }
+        } catch (error) {
+            console.error('Error en la solicitud de cancelación: ', error);
+            setNotification({ message: "Hubo un error en la solicitud de cancelación", type: "error" });
+        } finally {
+            setIsConfirmModalOpen(false);
+            setCancelAppont(null);
+        }
+    };
+
+    const cancel = (id, patientId) => {
+        setCancelAppont(id);
+        setCancelAppontId(patientId);
+        setIsConfirmModalOpen(true);
+    };
+
     if (!isOpen || !citas) return null;
 
     return (
@@ -104,15 +145,12 @@ const ModalAgenda = ({ isOpen, closeModal }) => {
                                     <p className="text-gray-500 text-sm">{formatTimeTo12Hour(cita.time)}</p>
                                 </div>
                                 <div className="flex flex-col space-y-6 mr-3">
-                                    <FontAwesomeIcon
-                                        icon={faMessage}
-                                        size="lg"
-                                        className={`cursor-pointer text-gray-500 hover:text-blue-500`}
-                                    />
+
                                     <FontAwesomeIcon
                                         icon={faXmark}
                                         size="lg"
                                         className={`cursor-pointer text-gray-500 hover:text-red-500`}
+                                        onClick={() => cancel(cita.id, cita.Patient.Login.id)}
                                     />
                                 </div>
                             </div>
@@ -122,7 +160,23 @@ const ModalAgenda = ({ isOpen, closeModal }) => {
                     )}
                 </div>
 
+                <ConfirmationModal
+                    isOpen={isConfirmModalOpen}
+                    onConfirm={cancelAppointment}
+                    title={"¿Cancelar cita?"}
+                    message={"¿Estás seguro de que deseas cancelar esta cita? Esta acción no se puede deshacer."}
+                    onCancel={() => setIsConfirmModalOpen(false)}
+                    buttonText={"Confirmar"}
+                    styles={"hover:bg-red-600 bg-red-500"}
+                />
 
+                {notification.message && (
+                    <MessageNotification
+                        message={notification.message}
+                        type={notification.type}
+                        onClose={() => setNotification({ message: "", type: "" })}
+                    />
+                )}
 
             </div>
         </div>

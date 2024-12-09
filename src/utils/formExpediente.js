@@ -8,10 +8,10 @@ const handleWeightChange = (e, formData, setFormData, setErrors) => {
             ...prevErrors,
             weight: 'El peso es obligatorio.'
         }));
-    } else if (parseInt(value, 10) < 9 || parseInt(value, 10) > 120) {
+    } else if (parseInt(value, 10) < 20 || parseInt(value, 10) > 120) {
         setErrors((prevErrors) => ({
             ...prevErrors,
-            weight: 'El peso debe estar entre 9 y 120 kg.'
+            weight: 'El peso debe estar entre 20 y 120 kg.'
         }));
     } else {
         setErrors((prevErrors) => ({
@@ -74,6 +74,11 @@ const handleFCChange = (e, formData, setFormData, setErrors) => {
             ...prevErrors,
             fC: 'El F.C es obligatorio.'
         }));
+    } else if (parseInt(value) < 40 || parseInt(value) > 200) {
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            fC: 'F.C. debe estar entre 40 y 200 lpm'
+        }));
     } else {
         setErrors((prevErrors) => ({
             ...prevErrors,
@@ -91,6 +96,11 @@ const handleFRChange = (e, formData, setFormData, setErrors) => {
         setErrors((prevErrors) => ({
             ...prevErrors,
             fR: 'El F.R es obligatorio.'
+        }));
+    } else if (parseInt(value) < 8 || parseInt(value) > 40) {
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            fR: 'F.R. debe estar entre 8 y 40 respiraciones por minuto.'
         }));
     } else {
         setErrors((prevErrors) => ({
@@ -110,6 +120,11 @@ const handleTChange = (e, formData, setFormData, setErrors) => {
         setErrors((prevErrors) => ({
             ...prevErrors,
             t: 'El T es obligatorio.'
+        }));
+    } else if (parseInt(value) < 35 || parseInt(value) > 42) {
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            t: 'La T debe estar entre 35°C y 42°C.'
         }));
     } else {
         setErrors((prevErrors) => ({
