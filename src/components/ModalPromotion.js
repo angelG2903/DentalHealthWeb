@@ -39,7 +39,7 @@ const ModalPromotion = ({ isOpen, closeModal, promotionData, onSave }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-40">
             <div className="bg-white rounded-lg w-11/12 md:w-1/3">
                 {/* Encabezado del modal */}
                 <div className="flex justify-between items-center pb-3 border-b p-3 bg-blue-500 rounded-t-lg">

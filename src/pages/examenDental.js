@@ -49,6 +49,8 @@ const examenDental = () => {
 
     const [notification, setNotification] = useState({ message: "", type: "" });
 
+    const [isLoading, setIsLoading] = useState(false);
+
     useEffect(() => {
         if (!id) return;
         const fetchData = async () => {
@@ -68,7 +70,7 @@ const examenDental = () => {
     }, [id]);
 
     const handleSubmit = async (dientes) => {
-
+        setIsLoading(true);
         try {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
             const response = await fetch(`${apiUrl}/api/dentalExam/create/${id}`, {
@@ -81,7 +83,9 @@ const examenDental = () => {
 
             if (response.ok) {
                 setNotification({ message: "Datos guardados exitosamente", type: "success" });
-                setTimeout(()=> {
+                setTimeout(() => {
+                    setLoading(false);
+                    setIsLoading(false);
                     router.push(`/mostrarExamenDental/?id=${id}`);
                 }, 2000);
             } else {
@@ -94,12 +98,19 @@ const examenDental = () => {
             setNotification({ message: "Ocurrió un error al enviar la solicitud.", type: "error" });
         } finally {
             setLoading(false);
+            setIsLoading(false);
         }
     };
 
     return (
 
         <Layout>
+            {/* Spinner de carga */}
+            {isLoading && (
+                <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+                    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500"></div>
+                </div>
+            )}
             {error && (
                 <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 mb-5 rounded relative" role="alert">
                     <strong className="font-bold">¡Error!</strong>

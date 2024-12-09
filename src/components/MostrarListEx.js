@@ -12,12 +12,15 @@ const MostrarListEx = ({ content, data, setData, deleteType, message }) => {
     const [expedientToDelete, setExpedientToDelete] = useState(null);
     const [notification, setNotification] = useState({ message: "", type: "" });
 
+    const [isLoading, setIsLoading] = useState(false);
+
     const confirmDelete = (id) => {
         setExpedientToDelete(id);
         setIsConfirmModalOpen(true);
     };
 
     const handleDelete = async () => {
+        setIsLoading(true);
         try {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
             const response = await fetch(`${apiUrl}/api/medicalForm/delete/${expedientToDelete}`, {
@@ -26,6 +29,7 @@ const MostrarListEx = ({ content, data, setData, deleteType, message }) => {
             if (response.ok) {
                 setData(data.filter((expediente) => expediente.id !== expedientToDelete));
                 setNotification({ message: "Expediente eliminado exitosamente", type: "success" });
+                setIsConfirmModalOpen(false);
             } else {
                 setNotification({ message: "Hubo un error al eliminar el expediente", type: "error" });
             }
@@ -33,12 +37,13 @@ const MostrarListEx = ({ content, data, setData, deleteType, message }) => {
             console.error("Error al eliminar el expediente:", error);
             setNotification({ message: "Ocurrió un error al intentar eliminar el expediente.", type: "error" });
         } finally {
-            setIsConfirmModalOpen(false);
+            setIsLoading(false);
             setExpedientToDelete(null);
         }
     };
 
     const handleDeleteDental = async () => {
+        setIsLoading(true);
         try {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
             const response = await fetch(`${apiUrl}/api/dentalExam/delete/${expedientToDelete}`, {
@@ -47,6 +52,7 @@ const MostrarListEx = ({ content, data, setData, deleteType, message }) => {
             if (response.ok) {
                 setData(data.filter((expediente) => expediente.id !== expedientToDelete));
                 setNotification({ message: "Examen dental eliminado exitosamente", type: "success" });
+                setIsConfirmModalOpen(false);
             } else {
                 setNotification({ message: "Hubo un error al eliminar el examen dental", type: "error" });
             }
@@ -54,13 +60,19 @@ const MostrarListEx = ({ content, data, setData, deleteType, message }) => {
             console.error("Error al eliminar el examen dental:", error);
             setNotification({ message: "Ocurrió un error al intentar eliminar el examen dental.", type: "error" });
         } finally {
-            setIsConfirmModalOpen(false);
+            setIsLoading(false);
             setExpedientToDelete(null);
         }
     };
 
     return (
         <>
+            {/* Spinner de carga */}
+            {isLoading && (
+                <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+                    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500"></div>
+                </div>
+            )}
             <div className="grid grid-cols-1 md:grid-cols-6 xl:grid-cols-9 2xl:grid-cols-12 gap-6 justify-items-center">
                 {data && data.length > 0 ? (
                     data.map((expediente, index) => (

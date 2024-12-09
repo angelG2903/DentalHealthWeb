@@ -27,9 +27,11 @@ const formUser = () => {
     const router = useRouter();
     const [error, setError] = useState("");
 
+    const [isLoading, setIsLoading] = useState(false);
+
     // Manejar el envío del formulario
     const handleSubmit = async (formData) => {
-
+        setIsLoading(true);
         try {
             // Enviar el formulario al servidor
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -40,7 +42,10 @@ const formUser = () => {
 
             if (response.ok) {
                 console.log('Formulario enviado con éxito');
-                router.push('/');
+                setTimeout(() => {
+                    setIsLoading(false);
+                    router.push('/');
+                }, 3000);
             } else {
                 console.error('Error al enviar el formulario');
                 setError('Error al enviar el formulario. Inténtalo de nuevo.',);
@@ -49,11 +54,19 @@ const formUser = () => {
         } catch (error) {
             console.error('Error en la solicitud:', error);
             setError(`Ocurrió un error al enviar la solicitud. ${error}`);
+        } finally {
+            setIsLoading(false);
         }
     }
 
     return (
         <Layout>
+            {/* Spinner de carga */}
+            {isLoading && (
+                <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+                    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500"></div>
+                </div>
+            )}
             {error && (
                 <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 mb-5 rounded relative" role="alert">
                     <strong className="font-bold">¡Error!</strong>

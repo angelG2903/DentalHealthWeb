@@ -57,6 +57,9 @@ const promotion = () => {
     const [loading, setLoading] = useState(true); // Estado para mostrar un indicador de carga
     const [perfil, setPerfil] = useState(null);
 
+    const [isLoading, setIsLoading] = useState(false);
+
+
     useEffect(() => {
         // Función para hacer la solicitud GET
         const fetchData = async () => {
@@ -118,6 +121,7 @@ const promotion = () => {
     };
 
     const handleSavePromotion = async (formDataToSend) => {
+        setIsLoading(true);
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         const url = promotionData
             ? `${apiUrl}/api/promotion/update/${promotionData.id}`
@@ -133,6 +137,7 @@ const promotion = () => {
 
             if (response.ok) {
                 setNotification({ message: "Promoción guardada exitosamente", type: "success" });
+                setIsModalOpen(false);
             } else {
                 setNotification({ message: "Hubo un error al guardar la promoción", type: "error" });
             }
@@ -140,8 +145,8 @@ const promotion = () => {
             console.error("Error al guardar la promoción:", error);
             setNotification({ message: "Ocurrió un error al intentar guardar la promoción.", type: "error" });
         } finally {
-            setIsModalOpen(false);
             setPromotionData(null);
+            setIsLoading(false);
         }
     };
 
@@ -152,6 +157,7 @@ const promotion = () => {
     };
 
     const handleDelete = async () => {
+        setIsLoading(true);
         try {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
             const response = await fetch(`${apiUrl}/api/promotion/delete/${promotionToDelete}`, {
@@ -160,6 +166,7 @@ const promotion = () => {
             if (response.ok) {
                 setData(data.filter((publicacion) => publicacion.id !== promotionToDelete));
                 setNotification({ message: "Promoción eliminada exitosamente", type: "success" });
+                setIsConfirmModalOpen(false);
             } else {
                 setNotification({ message: "Hubo un error al eliminar la promoción", type: "error" });
             }
@@ -167,7 +174,7 @@ const promotion = () => {
             console.error("Error al eliminar la promoción:", error);
             setNotification({ message: "Ocurrió un error al intentar eliminar la promoción.", type: "error" });
         } finally {
-            setIsConfirmModalOpen(false);
+            setIsLoading(false);
             setPromotionToDelete(null);
         }
     };
@@ -185,6 +192,12 @@ const promotion = () => {
 
     return (
         <Layout>
+            {/* Spinner de carga */}
+            {isLoading && (
+                <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+                    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500"></div>
+                </div>
+            )}
             <div className="min-h-screen bg-gray-100 flex justify-center py-8">
                 <div className="w-3/4">
                     <h1 className="text-2xl font-medium text-center mt-8 mb-8">Promociones</h1>
