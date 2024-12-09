@@ -2,6 +2,7 @@ import Layout from '@/components/Layout';
 import { useState } from "react";
 import { useRouter } from 'next/router';
 import RecordUser from '@/components/RecordUser';
+import MessageNotification from '@/components/MessageNotification';
 
 export async function getServerSideProps(context) {
   const { req } = context;
@@ -27,6 +28,7 @@ const formUser = () => {
     const router = useRouter();
     const [error, setError] = useState("");
 
+    const [notification, setNotification] = useState({ message: "", type: "" });
     const [isLoading, setIsLoading] = useState(false);
 
     // Manejar el envío del formulario
@@ -41,19 +43,20 @@ const formUser = () => {
             });
 
             if (response.ok) {
-                console.log('Formulario enviado con éxito');
+                setNotification({ message: "Formulario enviado con éxito", type: "success" });
                 setTimeout(() => {
                     setIsLoading(false);
                     router.push('/');
                 }, 3000);
             } else {
-                console.error('Error al enviar el formulario');
+                setNotification({ message: "Error al enviar el formulario. Inténtalo de nuevo.", type: "error" });
                 setError('Error al enviar el formulario. Inténtalo de nuevo.',);
             }
 
         } catch (error) {
             console.error('Error en la solicitud:', error);
             setError(`Ocurrió un error al enviar la solicitud. ${error}`);
+            setNotification({ message: "Ocurrió un error al enviar la solicitud.", type: "error" });
         } finally {
             setIsLoading(false);
         }
@@ -80,6 +83,13 @@ const formUser = () => {
                 </div>
             )}
             <RecordUser onSubmit={handleSubmit} title={"Registro Dentista"} editUser={false}/>
+            {notification.message && (
+                <MessageNotification
+                    message={notification.message}
+                    type={notification.type}
+                    onClose={() => setNotification({ message: "", type: "" })}
+                />
+            )}
         </Layout>
 
     )
