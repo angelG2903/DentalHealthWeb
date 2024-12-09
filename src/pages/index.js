@@ -129,9 +129,9 @@ const Login = () => {
               className={`mt-1 p-2 w-full border rounded ${errors.password ? "border-red-500" : "border-gray-300"}`} />
             {errors.password && <p className="mt-2 text-sm text-red-600">{errors.password}</p>}
           </div>
-          <Link href="/dashboard" className="text-blue-500 hover:underline float-end mb-4 text-sm underline">
+          {/* <Link href="/dashboard" className="text-blue-500 hover:underline float-end mb-4 text-sm underline">
             Olvidé mi contraseña
-          </Link>
+          </Link> */}
           <button
             type="submit"
             className="w-full text-white bg-blue-500 focus:outline-none hover:bg-blue-600 focus:ring-4 focus:ring-white font-medium rounded-lg text-sm px-2 py-2.5 me-2 mb-2"

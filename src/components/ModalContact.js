@@ -25,7 +25,7 @@ const ModalContact = ({ isOpen, closeModal }) => {
 
     useEffect(() => {
         if (selectedPatient) {
-            fetchMessages(selectedPatient.id);
+            fetchMessages(selectedPatient.loginId);
             
             socket.on('receive_private_message', (data) => {
                 setMensajes((prevMensajes) => [
@@ -48,7 +48,7 @@ const ModalContact = ({ isOpen, closeModal }) => {
     const fetchMessages = async (patientId) => {
         try {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-            const response = await fetch(`${apiUrl}/api/message/messages/${perfil.id}/${patientId}`);
+            const response = await fetch(`${apiUrl}/api/message/messages/${perfil.loginId}/${patientId}`);
             const data = await response.json();
             setMensajes(data);
             console.log(data)
@@ -74,7 +74,7 @@ const ModalContact = ({ isOpen, closeModal }) => {
                 setPerfil(data);
                 console.log(data);
 
-                socket.emit('register', data.Login.id);
+                socket.emit('register', data.loginId);
 
                 // Escuchar mensajes privados
                 
@@ -94,13 +94,13 @@ const ModalContact = ({ isOpen, closeModal }) => {
         e.preventDefault();
         if (mensaje.trim() === "") return;
         if (mensaje.trim() && selectedPatient) {
-            const nuevoMensaje = { id: mensajes.length + 1, message: mensaje, senderId: perfil.id };
+            const nuevoMensaje = { id: mensajes.length + 1, message: mensaje, senderId: perfil.loginId };
             setMensajes([...mensajes, nuevoMensaje]);
 
             // Enviar mensaje al backend
             socket.emit("send_private_message", {
-                fromUserId: perfil.id, // Cambia esto por el ID del doctor
-                toUserId: selectedPatient.id, // ID del paciente seleccionado
+                fromUserId: perfil.loginId, // Cambia esto por el ID del doctor
+                toUserId: selectedPatient.loginId, // ID del paciente seleccionado
                 message: mensaje,
             });
 
@@ -227,10 +227,10 @@ const ModalContact = ({ isOpen, closeModal }) => {
                         {/* Chat del paciente */}
                         <div className="flex-1 overflow-y-auto p-4 bg-gray-50 rounded-md max-h-96 menu-scroll">
                             {mensajes.length > 0 ? (
-                                mensajes.map((msg) => (
+                                mensajes.map((msg, index) => (
                                     <div
-                                        key={msg.id}
-                                        className={`p-2 my-2 rounded-md ${msg.senderId === perfil.id
+                                        key={`${msg.id}-${index}`}
+                                        className={`p-2 my-2 rounded-md ${msg.senderId === perfil.loginId
                                             ? "bg-blue-100 text-right"
                                             : "bg-gray-100 text-left"
                                             }`}
