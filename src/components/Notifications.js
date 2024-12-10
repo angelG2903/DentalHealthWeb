@@ -165,13 +165,13 @@ const Notification = ({ isOpen, closeModal }) => {
                 <div className="flex flex-col sm:flex-row justify-end mt-4 space-y-2 sm:space-y-0 space-x-0 sm:space-x-2">
                   <button
                     className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                    onClick={() => confirm(notification.appointmentId, notification.Patient.id)}
+                    onClick={() => confirm(notification.appointmentId, notification.Patient.Login.id)}
                   >
                     Confirmar cita
                   </button>
                   <button
                     className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                    onClick={() => cancel(notification.appointmentId, notification.Patient.id)}
+                    onClick={() => cancel(notification.appointmentId, notification.Patient.Login.id)}
                   >
                     Cancelar
                   </button>
