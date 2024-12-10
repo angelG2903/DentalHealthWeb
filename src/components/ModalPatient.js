@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-// import imagenP from '@@/img/logo3.png'; 
-import Image from 'next/image';
 
 const ModalPacientes = ({ isOpen, closeModal, props }) => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -33,11 +31,6 @@ const ModalPacientes = ({ isOpen, closeModal, props }) => {
         }
     };
 
-
-    // Filtra los pacientes en función del término de búsqueda
-    /* const filteredPacientes = pacientes.filter((paciente) =>
-        paciente.name.toLowerCase().includes(searchTerm.toLowerCase())
-    ); */
     const filteredPacientes = data
         ? data.filter((paciente) =>
             paciente.Login.name.toLowerCase().includes(searchTerm.toLowerCase())

@@ -88,7 +88,7 @@ const ModalAgenda = ({ isOpen, closeModal }) => {
             });
 
             if (response.ok) {
-                setNotification({ message: "La Cita ha sido cancelada", type: "error" });
+                setNotification({ message: "La Cita ha sido cancelada", type: "success" });
                 socket.emit('cancel', { toUserId: cancelAppontId });
                 fetchAppointmentsData(selectedDate);
             } else {

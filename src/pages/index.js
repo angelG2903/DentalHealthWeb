@@ -78,18 +78,12 @@ const Login = () => {
         });
 
 
-        router.push('/home');  // Redirigir al dashboard
+        router.push('/home'); 
       } else {
         setErrors((prevErrors) => ({
           ...prevErrors,
           error: 'Correo o contraseña incorrectos'
         }));
-        /* console.log(JSON.stringify({ formDataToSend }));
-        const errorData = await res.json();
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          error: errorData.error
-        }));  */
 
       }
     } catch (err) {
