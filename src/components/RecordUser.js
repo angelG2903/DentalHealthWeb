@@ -544,7 +544,7 @@ const RecordUser = ({ initialData = {}, onSubmit, title, editUser }) => {
                                 {errors.clinicAddress && <p className="text-red-500 text-xs mt-1">{errors.clinicAddress}</p>}
                             </div>
 
-                            <div className="col-span-2 md:col-span-1">
+                            {/* <div className="col-span-2 md:col-span-1">
                                 <label className="block text-sm font-medium text-gray-700">Archivo de autorización</label>
                                 <input
                                     type="file"
@@ -569,7 +569,7 @@ const RecordUser = ({ initialData = {}, onSubmit, title, editUser }) => {
                                     </div>
                                 )}
                                 {errors.authorizationFile && <p className="text-red-500 text-xs mt-1">{errors.authorizationFile}</p>}
-                            </div>
+                            </div> */}
 
                         </div>
                     )}

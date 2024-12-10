@@ -167,7 +167,7 @@ const handleProfessionalLicenseChange = (e, formData, setFormData, setErrors) =>
     setFormData({ ...formData, professionalLicense: value });
 
     
-    if (!/^\d{8}$/.test(value)) {
+    if (!/^\d{7}$/.test(value)) {
         setErrors((prevErrors) => ({
         ...prevErrors,
         professionalLicense: 'La Cedula profesional debe tener 8 dígitos.',
@@ -212,7 +212,7 @@ const handleSpecialtyLicenseChange = (e, formData, setFormData, setErrors) => {
     setFormData({ ...formData, specialtyLicense: value });
 
     
-    if (!/^\d{8}$/.test(value)) {
+    if (!/^\d{7}$/.test(value)) {
         setErrors((prevErrors) => ({
         ...prevErrors,
         specialtyLicense: 'La Cedula de especialidad debe tener 8 dígitos.',
